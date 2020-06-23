@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SSSS’20 Playground &mdash; SSSS20 Less Is More Playground  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+ <script type="text/javascript">
+    $(document).ready(function() {
+        //
+        //
+        $(".toggle > *").hide();
+        $(".toggle .admonition-title").show();
+        $(".toggle .admonition-title").click(function() {
+            $(this).parent().children().not(".admonition-title").toggle(400);
+            $(this).parent().children(".admonition-title").toggleClass("open");
+        })
+    });
+</script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home" alt="Documentation Home"> SSSS20 Less Is More Playground
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">SSSS’20 Playground</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#docker-containers">Docker Containers</a></li>
+<li><a class="reference internal" href="#accessing-the-containers">Accessing The Containers</a></li>
+<li><a class="reference internal" href="#adding-new-applications-to-the-pipeline">Adding New Applications To The Pipeline</a></li>
+<li><a class="reference internal" href="#adding-the-cve-information-to-the-vulnerability-database">Adding The CVE Information To The Vulnerability Database</a></li>
+<li><a class="reference internal" href="#finding-and-running-the-exploit">Finding And Running The Exploit</a></li>
+<li><a class="reference internal" href="#using-the-application-recording-the-code-coverage">Using The Application &amp; Recording The Code Coverage</a></li>
+<li><a class="reference internal" href="#debloating-the-application">Debloating The Application</a></li>
+<li><a class="reference internal" href="#verifying-the-functionality-of-the-application">Verifying The Functionality Of The Application</a></li>
+<li><a class="reference internal" href="#running-the-exploit-on-the-debloated-version">Running The Exploit On The Debloated Version</a></li>
+<li><a class="reference internal" href="#source-code-metrics-after-debloating">Source Code Metrics After Debloating</a></li>
+<li><a class="reference internal" href="#working-with-other-debloated-applications">Working With Other Debloated Applications</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">SSSS20 Less Is More Playground</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>SSSS’20 Playground</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ssss-20-playground">
+<h1>SSSS’20 Playground<a class="headerlink" href="#ssss-20-playground" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Navigate to <a class="reference external" href="https://debloating.com/#sourcecode">https://debloating.com/#sourcecode</a></p></li>
+<li><p>Download the desired docker artifact</p></li>
+<li><p>Decompress the tar file</p></li>
+<li><p>Run <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">-d</span></code> in the root directory</p></li>
+<li><p>You can view the logs using <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">logs</span> <span class="pre">-f</span> <span class="pre">-t</span></code></p></li>
+</ol>
+</div>
+<div class="section" id="docker-containers">
+<h2>Docker Containers<a class="headerlink" href="#docker-containers" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/SSSS20.png" class="align-center" src="_images/SSSS20.png" />
+<ul class="simple">
+<li><p><strong>Public Web:</strong> This docker container is the public side of your application. It is accessible on <a class="reference external" href="http://localhost:8084">http://localhost:8084</a>. Public internet users will interact with the applications over this port. No training and code coverage recording is performed on this container. You will mount your attacks on this container.</p></li>
+<li><p><strong>Training Web:</strong> This container is the training side of your application. It is accessible for trusted users during your training phase. It is accessible on <a class="reference external" href="http://localhost:8085">http://localhost:8085</a>. You would run Selenium and Monkey tests against this container.</p></li>
+<li><p><strong>Admin:</strong> This container hosts the admin panel as well as management phpMyAdmin instance of the application. It is used to view the debloating stats and perform debloating. It is accessible on <a class="reference external" href="http://localhost:8086">http://localhost:8086</a>.</p></li>
+<li><p><strong>db:</strong> This container hosts the databases for your web applications as well as the code coverage information. It has no public interface but is accessible to other docker containers through the “db” hostname.</p></li>
+</ul>
+</div>
+<div class="section" id="accessing-the-containers">
+<h2>Accessing The Containers<a class="headerlink" href="#accessing-the-containers" title="Permalink to this headline">¶</a></h2>
+<p>If you need shell access to any of the containers, you need to run the /bin/bash process inside the containers. We have provided shell scripts to aid with this process. These scripts will find the container id and execute the /bin/bash process for you. The scripts to access the containers are in the root directory:</p>
+<ul class="simple">
+<li><p>Public Web: <code class="code docutils literal notranslate"><span class="pre">./ssh_public_web.sh</span></code></p></li>
+<li><p>Training Web: <code class="code docutils literal notranslate"><span class="pre">./ssh_training_web.sh</span></code></p></li>
+<li><p>Admin: <code class="code docutils literal notranslate"><span class="pre">./ssh_admin.sh</span></code></p></li>
+<li><p>db: <code class="code docutils literal notranslate"><span class="pre">./ssh_db.sh</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="adding-new-applications-to-the-pipeline">
+<h2>Adding New Applications To The Pipeline<a class="headerlink" href="#adding-new-applications-to-the-pipeline" title="Permalink to this headline">¶</a></h2>
+<p>Before we debloat a web application, we first have to add its information and track its source files from our admin debloating panel.</p>
+<p>Steps to follow:</p>
+<div class="line-block">
+<div class="line"><strong>[Navigate to admin]</strong></div>
+<div class="line">Navigate to the admin panel (<a class="reference external" href="http://localhost:8086/admin">http://localhost:8086/admin</a>).</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Add software]</strong></div>
+<div class="line">Add the target application under the “Software” tab. In this case “phpMyAdmin”.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Add software version]</strong></div>
+<div class="line">Add the target version under the “Software Version” tab. In this case “4.4.15.6”. This allows us to add multiple versions of the same web application to our code coverage database.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Add application files]</strong></div>
+<div class="line">Under the “Debloating” tab, add the current directory for the target application. “/var/www/html/phpMyAdmin-4.4.15.6-all-languages” in our case. This step will add the list of files to the code_coverage database so that we can track their line coverage later on.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Prepare the class destructors]</strong></div>
+<div class="line">Under the “Debloating” tab (<a class="reference external" href="http://localhost:8086/admin/software_file/description">http://localhost:8086/admin/software_file/description</a>), click on the “rewrite destructors” button. This will make sure that we record the full code coverage for our target application.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do we need to talk about calls to exit inside shutdown_functions?</p>
+</div>
+</div>
+<div class="section" id="adding-the-cve-information-to-the-vulnerability-database">
+<h2>Adding The CVE Information To The Vulnerability Database<a class="headerlink" href="#adding-the-cve-information-to-the-vulnerability-database" title="Permalink to this headline">¶</a></h2>
+<p>By adding the information about known vulnerabilities, we can identify if debloating is able to remove them before actually modifying the source of our applications. The first step to add each CVE to our database is to identify the files and lines within those files that make the application vulnerable. In this tutorial, we focus on “CVE-2016-5734”.</p>
+<p>Steps to follow:</p>
+<div class="line-block">
+<div class="line"><strong>[Find CVE information]</strong></div>
+<div class="line">Google the CVE id and navigate to sites such as MITRE or NVD (National Vulnerability Database) website.</div>
+</div>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<p><a class="reference external" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-5734">https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-5734</a></p>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Understand the vulnerability]</strong></div>
+<div class="line">Take your time to read about this vulnerability and get a general understanding of it. This is required later on when we mark the lines within the source code that are related to this vulnerability.</div>
+</div>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><p>This vulnerability affects the <code class="code docutils literal notranslate"><span class="pre">preg_replace</span></code> function. By injecting the <code class="code docutils literal notranslate"><span class="pre">/e</span></code> flag as input to this function we can make PHP run <code class="code docutils literal notranslate"><span class="pre">eval</span></code> on the output of regex find and replace. To do this, we have to inject <code class="code docutils literal notranslate"><span class="pre">/e</span></code> and also use a <code class="code docutils literal notranslate"><span class="pre">null</span> <span class="pre">byte</span></code> to terminate the rest of the string to make this exploit work.</p>
+</div></blockquote>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Find the patch]</strong></div>
+<div class="line">Follow the link to the phpMyAdmin website including the changelogs for the fix to this vulnerability, find the diff of patch files for phpMyAdmin 4.4 branch.</div>
+</div>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Navigate to <a class="reference external" href="https://www.phpmyadmin.net/security/PMASA-2016-27/">https://www.phpmyadmin.net/security/PMASA-2016-27/</a></p></li>
+<li><p>Find <a class="reference external" href="https://github.com/phpmyadmin/phpmyadmin/commit/33d1373">https://github.com/phpmyadmin/phpmyadmin/commit/33d1373</a></p></li>
+<li><p>Find <a class="reference external" href="https://github.com/phpmyadmin/phpmyadmin/commit/daf3751">https://github.com/phpmyadmin/phpmyadmin/commit/daf3751</a></p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Identify the affected files]</strong></div>
+<div class="line">By looking at the Git diffs and using your judgment, list the filenames that are affected by this vulnerability.</div>
+</div>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>libraries/TableSearch.class.php</p></li>
+<li><p>libraries/Tracker.class.php</p></li>
+<li><p>libraries/plugins/export/ExportSql.class.php</p></li>
+<li><p>libraries/tbl_columns_definition_form.lib.php</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Match the vulnerable lines]</strong></div>
+<div class="line">Different minor versions of the same application might have slightly different source code. To make sure the line number mapping is correct, we should not rely on the line numbers of the Git commit. Instead, we confirm the line numbers on our own application. For this, look into the <code class="code docutils literal notranslate"><span class="pre">web/phpMyAdmin-4.4.15.6-all-languages/</span></code> directory and find the lines that were removed or changed from the vulnerable version of the application (red lines).</div>
+</div>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>libraries/TableSearch.class.php: 1410</p></li>
+<li><p>libraries/Tracker.class.php: 923</p></li>
+<li><p>libraries/plugins/export/ExportSql.class.php: 1255</p></li>
+<li><p>libraries/tbl_columns_definition_form.lib.php: 795</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Identify the function lines]</strong></div>
+<div class="line">Whenever the vulnerability resides inside a PHP function, we also include that information in our database. For that, write down the line of the first executable line within the function that includes the vulnerable code. In the following example, the vulnerability is on line <strong>448</strong> and the first executable inside the function is on line <strong>447</strong>. So in this case we note down <strong>PMA_getNumberOfFieldsFromRequest():447</strong>.</div>
+</div>
+<img alt="_images/sourcecode.png" class="align-center" src="_images/sourcecode.png" />
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>libraries/TableSearch.class.php:<strong>_getRegexReplaceRows($columnIndex, $find, $replaceWith, $charSet):1390</strong></p></li>
+<li><p>libraries/Tracker.class.php:<strong>handleQuery($query):864</strong></p></li>
+<li><p>libraries/plugins/export/ExportSql.class.php:<strong>getTableDef( $db, $table, $crlf, $error_url, $show_dates = false, $add_semicolon = true, $view = false, $update_indexes_increments = true, $aliases = array() ):1098</strong></p></li>
+<li><p>libraries/tbl_columns_definition_form.lib.php:<strong>PMA_getHtmlForTransformation($columnNumber, $ci, $ci_offset, $available_mime, $columnMeta, $mime_map, $type_prefix ):783</strong></p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Add CVE information to database]</strong></div>
+<div class="line">With this information, go back to the admin panel, add the CVE under the ..code:<cite>CVE</cite> tab. Next, under the <code class="code docutils literal notranslate"><span class="pre">Software</span> <span class="pre">Vulnerabilities</span></code> tab, mark phpMyAdmin 4.4.15 as the software version that is affected by this CVE.  Then, under the <code class="code docutils literal notranslate"><span class="pre">Vulnerable</span> <span class="pre">Files</span> <span class="pre">Mapping</span></code> tab, add the path to each file from the root of the application. In a similar fashion, add the <code class="code docutils literal notranslate"><span class="pre">Vulnerable</span> <span class="pre">Lines</span> <span class="pre">Mapping</span></code> and <code class="code docutils literal notranslate"><span class="pre">Vulnerable</span> <span class="pre">Functions</span> <span class="pre">Mapping</span></code> for the same CVE.</div>
+</div>
+</div>
+<div class="section" id="finding-and-running-the-exploit">
+<h2>Finding And Running The Exploit<a class="headerlink" href="#finding-and-running-the-exploit" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate the power of debloating in removing actual vulnerabilities, we focus on available exploits. Your task for this step is to find the exploit code for CVE-2016-5734 vulnerability. Websites such as <a class="reference external" href="https://www.exploit-db.com/">https://www.exploit-db.com/</a> and <a class="reference external" href="https://github.com/">https://github.com/</a> are good sources to look for these exploits.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.exploit-db.com/exploits/40185">https://www.exploit-db.com/exploits/40185</a></p>
+</div></blockquote>
+</div>
+<p>Once you download the exploit code, run it against the public interface of your web application which is located at <a class="reference external" href="http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages">http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages</a>.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Exploit execution: <code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">exploits/40185.py</span> <span class="pre">http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages</span> <span class="pre">-u</span> <span class="pre">root</span> <span class="pre">-p</span> <span class="pre">root</span> <span class="pre">-d</span> <span class="pre">mysql</span></code></p></li>
+<li><p>Result: x bb8440b2284f 4.19.84-microsoft-standard #1 SMP Wed Nov 13 11:44:37 UTC 2019 x86_64 GNU/Linux</p></li>
+<li><p>Requires python requests library to be installed.</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="using-the-application-recording-the-code-coverage">
+<h2>Using The Application &amp; Recording The Code Coverage<a class="headerlink" href="#using-the-application-recording-the-code-coverage" title="Permalink to this headline">¶</a></h2>
+<p>In order to debloat the application, first we have to record a representative code coverage. This way, we can identify the parts of the application that are required by the users. For instance, if users exercise the create/drop database functionality, we want to keep it and remove the export functionality if it has never been used.</p>
+<p>We have various ways to model the user behavior, in this tutorial we focus on <strong>scripting common tasks as Selenium scripts</strong> and the <strong>monkey testing</strong>.</p>
+<div class="line-block">
+<div class="line"><strong>[Selenium scripts]</strong></div>
+<div class="line">- Provide the login</div>
+<div class="line">- Walk them through the provided functions</div>
+<div class="line">- Provide the empty run a query and they have to fill the selector for query text box and run query buttons and success scenario</div>
+<div class="line">- Provide the code for creation of a database and other basic tasks.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>(Disable code mirror)</p>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Monkey testing]</strong></div>
+<div class="line-block">
+<div class="line">Is a form of automated random testing, similar to fuzzing. By sending random keystrokes and events to the page, we navigate to different parts of the application and invoke different features. The main idea is to exercise easy to reach features.</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Prepare the script</p>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Check he coverage in the admin panel]</strong></div>
+<div class="line-block">
+<div class="line">To make sure we have correctly recorded the code coverage as you are working with the application, navigate to <a class="reference external" href="http://localhost:8086/admin/report">http://localhost:8086/admin/report</a>. By clicking on the tests for our target web application, you can view specific files (e.g., index.php) being used and you can also view the coverage of specific lines within these files.</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>[Look at the source code metrics]</strong></div>
+<div class="line">Before we debloat the application, let’s look at some of the metrics that can be extracted from the source code. For that, we use the phpmetrics (<a class="reference external" href="https://github.com/phpmetrics/PhpMetrics">https://github.com/phpmetrics/PhpMetrics</a>) package. It comes preinstalled in the <strong>Training Web</strong> container.</div>
+</div>
+<div class="line-block">
+<div class="line">Use the <code class="code docutils literal notranslate"><span class="pre">ssh_training_web.sh</span></code> script to get a shell into the corresponding container. Navigate to <code class="code docutils literal notranslate"><span class="pre">/var/www/html/</span></code> directory where the applications are.</div>
+<div class="line">Run <code class="code docutils literal notranslate"><span class="pre">phpmetrics</span> <span class="pre">phpMyAdmin-4.4.15.6-all-languages/</span></code>. This will take a while and generate results such as Logical Lines Of Code and Average Cyclomatic Complexity by Class. Take a note of these results, we will compare the results after debloating as well.</div>
+</div>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line">Executing system analyzes…</div>
+<div class="line">LOC Lines of code                                       90473</div>
+<div class="line">Logical lines of code                                    57049</div>
+<div class="line">…</div>
+<div class="line">Complexity Average Cyclomatic</div>
+<div class="line">complexity by class                                     23.98</div>
+<div class="line">Average Relative system complexity          520.08</div>
+<div class="line">Average Difficulty                                        16.13</div>
+<div class="line">…</div>
+<div class="line">Done</div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="debloating-the-application">
+<h2>Debloating The Application<a class="headerlink" href="#debloating-the-application" title="Permalink to this headline">¶</a></h2>
+<p>Once you are happy with the training, we can go ahead and debloat the unused parts. Navigate to the admin panel to the Debloating tab: <a class="reference external" href="http://localhost:8086/admin/software_file/description">http://localhost:8086/admin/software_file/description</a>.
+Here, we have the option of file and function debloating. Remember that function debloating is a superset of file debloating where both unused files and unused functions are removed. Let’s click on function debloating.</p>
+<p>This step can take a while as we are rewriting the source code of the whole application. If everything goes well, the text output will list the files and functions and whether they were covered, hence preserved or unused and removed.</p>
+</div>
+<div class="section" id="verifying-the-functionality-of-the-application">
+<h2>Verifying The Functionality Of The Application<a class="headerlink" href="#verifying-the-functionality-of-the-application" title="Permalink to this headline">¶</a></h2>
+<p>It’s time to go back to the application and start using it. For this step, we will be using <a class="reference external" href="http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages/">http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages/</a> since we do not want to train the application further. Repeat the tasks that you did before and make sure everything works. These include tasks such as login, and the items covered by the selenium scripts.</p>
+<p>If there was an issue with the training part, you might try to use a feature that has been removed. If you think that you need to go back and retrain the application, first, revert the original copy of the application from the web/original directory.</p>
+<ul class="simple">
+<li><p>Navigate to the “web” directory.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">cp</span> <span class="pre">-R</span> <span class="pre">original/phpMyAdmin-4.4.15.6-all-languages</span> <span class="pre">.</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">-R</span> <span class="pre">777</span> <span class="pre">phpMyAdmin-4.4.15.6-all-languages/</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">644</span> <span class="pre">phpMyAdmin-4.4.15.6-all-languages/config.inc.php</span></code></p></li>
+</ul>
+<p>Now that we have restored the original non-debloated application, you can go back to the training interface (<a class="reference external" href="http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/</a>) and rerun our tests to complete the training phase. Repeat the debloating and continue to this step until you are satisfied with the preserved functionality within the debloating application.</p>
+</div>
+<div class="section" id="running-the-exploit-on-the-debloated-version">
+<h2>Running The Exploit On The Debloated Version<a class="headerlink" href="#running-the-exploit-on-the-debloated-version" title="Permalink to this headline">¶</a></h2>
+<p>This exploit uses  a vulnerability in table find and replace functionality within phpMyAdmin. If this feature was never touched during training, debloating removes it from the application. As a result, the exploit attempts fail. Simply rerun the exploit and observe the result.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><p>Rerunning same as before, this will output:</p>
+<div class="line-block">
+<div class="line">Exploit failed!</div>
+<div class="line">Try to manually set exploit parameters like –table, –database and –token. Remember that servers with PHP version greater than 5.4.6 is not exploitable, because of warning about null byte in regexp</div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="source-code-metrics-after-debloating">
+<h2>Source Code Metrics After Debloating<a class="headerlink" href="#source-code-metrics-after-debloating" title="Permalink to this headline">¶</a></h2>
+<p>Now it’s time to run phpmetrics again and see the reduction in lines of code and cyclomatic complexity: <code class="code docutils literal notranslate"><span class="pre">phpmetrics</span> <span class="pre">phpMyAdmin-4.4.15.6-all-languages/</span></code></p>
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><p>Similar to previous step with reduced lines of code and reduced cyclomatic complexity.</p>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="working-with-other-debloated-applications">
+<h2>Working With Other Debloated Applications<a class="headerlink" href="#working-with-other-debloated-applications" title="Permalink to this headline">¶</a></h2>
+<p>TODO: We can also provide exploits for WordPress and Magento, maybe skip the training and provide the already debloated applications and just tell them how to test the original and the debloated versions against these exploits.</p>
+<p>TODO: What to do about Ajax calls that cause an error, we can have a custom code that takes care of this.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, PragSec Lab
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
