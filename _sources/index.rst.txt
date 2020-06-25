@@ -10,11 +10,10 @@ SSSS'20 Playground
 Installation
 ------------
 
-1. Navigate to https://debloating.com/#sourcecode
-2. Download the desired docker artifact
-3. Decompress the tar file
-4. Run :code:`docker-compose up -d` in the root directory
-5. You can view the logs using :code:`docker-compose logs -f -t`
+1. Download the project files https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing
+2. Decompress the tar file (tar zxvf 
+3. Run :code:`docker-compose up -d` in the root directory
+4. You can view the logs using :code:`docker-compose logs -f -t`
 
 Docker Containers
 -----------------
@@ -26,6 +25,9 @@ Docker Containers
 - **Training Web:** This container is the training side of your application. It is accessible for trusted users during your training phase. It is accessible on http://localhost:8085. You would run Selenium and Monkey tests against this container.
 - **Admin:** This container hosts the admin panel as well as management phpMyAdmin instance of the application. It is used to view the debloating stats and perform debloating. It is accessible on http://localhost:8086.
 - **db:** This container hosts the databases for your web applications as well as the code coverage information. It has no public interface but is accessible to other docker containers through the “db” hostname. 
+
+.. note::
+   The credentials to log in to phpMyAdmin is username: root, password: root.
 
 Accessing The Containers
 ------------------------

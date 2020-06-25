@@ -9,7 +9,7 @@
 }
 
 .toggle .admonition-title:after {
-    content: " ⯈";
+    content: " ▶";
 }
 
 .toggle .admonition-title.open:after {

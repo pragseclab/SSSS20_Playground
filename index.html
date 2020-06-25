@@ -182,9 +182,8 @@
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
-<li><p>Navigate to <a class="reference external" href="https://debloating.com/#sourcecode">https://debloating.com/#sourcecode</a></p></li>
-<li><p>Download the desired docker artifact</p></li>
-<li><p>Decompress the tar file</p></li>
+<li><p>Download the project files <a class="reference external" href="https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing">https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing</a></p></li>
+<li><p>Decompress the tar file (tar zxvf</p></li>
 <li><p>Run <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">-d</span></code> in the root directory</p></li>
 <li><p>You can view the logs using <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">logs</span> <span class="pre">-f</span> <span class="pre">-t</span></code></p></li>
 </ol>
@@ -198,6 +197,10 @@
 <li><p><strong>Admin:</strong> This container hosts the admin panel as well as management phpMyAdmin instance of the application. It is used to view the debloating stats and perform debloating. It is accessible on <a class="reference external" href="http://localhost:8086">http://localhost:8086</a>.</p></li>
 <li><p><strong>db:</strong> This container hosts the databases for your web applications as well as the code coverage information. It has no public interface but is accessible to other docker containers through the “db” hostname.</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The credentials to log in to phpMyAdmin is username: root, password: root.</p>
+</div>
 </div>
 <div class="section" id="accessing-the-containers">
 <h2>Accessing The Containers<a class="headerlink" href="#accessing-the-containers" title="Permalink to this headline">¶</a></h2>
