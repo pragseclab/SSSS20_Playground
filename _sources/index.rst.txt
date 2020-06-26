@@ -47,7 +47,7 @@ If you need shell access to any of the containers, you need to run the /bin/bash
 Adding New Applications To The Pipeline
 ---------------------------------------
 
-Before we debloat a web application, we first have to add its information and track its source files from our admin debloating panel. 
+Before we debloat a web application, we first have to add its information and track its source files from our admin debloating panel. You can take a look at the admin panel walkthrough for more detail: https://debloating.com/walkthrough.html
 
 Steps to follow:
 
