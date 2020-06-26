@@ -7,13 +7,19 @@
 SSSS'20 Playground
 ==================
 
+Welcome to the **Less is more** playground for SSSS'20. In this tutorial, you will get hands on experience with using our pipeline to debloat phpMyAdmin web application. You will become familiar with the debloating administration panel, setup your own tests and see how a real exploit is stopped after debloating.
+
 Installation
 ------------
 
+.. note::
+   Skip the installation section for SSSS'20 event as the container has already been setup for you.
+
 1. Download the project files https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing
-2. Decompress the tar file (tar zxvf 
+2. Decompress the tar file (tar zxvf debloating_phpMyAdmin.tar.gz)
 3. Run :code:`docker-compose up -d` in the root directory
 4. You can view the logs using :code:`docker-compose logs -f -t`
+
 
 Docker Containers
 -----------------
@@ -31,7 +37,7 @@ Docker Containers
 
 Accessing The Containers
 ------------------------
-If you need shell access to any of the containers, you need to run the /bin/bash process inside the containers. We have provided shell scripts to aid with this process. These scripts will find the container id and execute the /bin/bash process for you. The scripts to access the containers are in the root directory:
+If you need shell access to any of the containers, you need to run the /bin/bash process inside the containers. We have provided shell scripts to aid with this process. These scripts will find the container id and execute the /bin/bash process for you. The scripts to access the containers are in the root directory of the applicaton which is currently at :code:`/home/ubuntu/debloating_phpMyAdmin/`. For **web** containers, the web applications are under :code:`/var/www/html/` and the database used for debloating panel is under **db** container named :code:`code_coverage`.
 
 - Public Web: :code:`./ssh_public_web.sh`
 - Training Web: :code:`./ssh_training_web.sh`
@@ -58,10 +64,7 @@ Steps to follow:
 | Under the “Debloating” tab, add the current directory for the target application. “/var/www/html/phpMyAdmin-4.4.15.6-all-languages” in our case. This step will add the list of files to the code_coverage database so that we can track their line coverage later on.
 
 | **[Prepare the class destructors]**
-| Under the “Debloating” tab (http://localhost:8086/admin/software_file/description), click on the “rewrite destructors” button. This will make sure that we record the full code coverage for our target application.
-
-.. note::
-   Do we need to talk about calls to exit inside shutdown_functions?
+| Under the “Debloating” tab (http://localhost:8086/admin/software_file/description), click on the “rewrite destructors” button. This will make sure that we record the full code coverage for our target application. This step can take around a minute and then it will show a text log of the destructors that have been rewritten and prepared for debloating.
 
 Adding The CVE Information To The Vulnerability Database
 --------------------------------------------------------
@@ -70,7 +73,7 @@ By adding the information about known vulnerabilities, we can identify if debloa
 Steps to follow:
 
 | **[Find CVE information]**
-| Google the CVE id and navigate to sites such as MITRE or NVD (National Vulnerability Database) website. 
+| Look up the CVE id (CVE-2016-5734) in Google and navigate to sites such as MITRE or NVD (National Vulnerability Database) for vulnerability details. 
 
 .. admonition:: Solution
    :class: toggle
@@ -83,7 +86,7 @@ Steps to follow:
 .. admonition:: Solution
    :class: toggle
 
-       This vulnerability affects the :code:`preg_replace` function. By injecting the :code:`/e` flag as input to this function we can make PHP run :code:`eval` on the output of regex find and replace. To do this, we have to inject :code:`/e` and also use a :code:`null byte` to terminate the rest of the string to make this exploit work.
+       This vulnerability affects the :code:`preg_replace` function. By injecting the :code:`/e` flag as input to this function we can make PHP run :code:`eval` on the output of regex find and replace. To do this, we have to inject :code:`/e` and also use a :code:`null byte` to terminate the rest of the string to make this exploit work. Read more at https://bitquark.co.uk/blog/2013/07/23/the_unexpected_dangers_of_preg_replace
 
 | **[Find the patch]**
 | Follow the link to the phpMyAdmin website including the changelogs for the fix to this vulnerability, find the diff of patch files for phpMyAdmin 4.4 branch.
@@ -132,7 +135,7 @@ Steps to follow:
       - libraries/tbl_columns_definition_form.lib.php:**PMA_getHtmlForTransformation($columnNumber, $ci, $ci_offset, $available_mime, $columnMeta, $mime_map, $type_prefix ):783**
 
 | **[Add CVE information to database]**
-| With this information, go back to the admin panel, add the CVE under the ..code:`CVE` tab. Next, under the :code:`Software Vulnerabilities` tab, mark phpMyAdmin 4.4.15 as the software version that is affected by this CVE.  Then, under the :code:`Vulnerable Files Mapping` tab, add the path to each file from the root of the application. In a similar fashion, add the :code:`Vulnerable Lines Mapping` and :code:`Vulnerable Functions Mapping` for the same CVE.
+| With this information, go back to the admin panel, add the CVE information under the :code:`CVE` tab. You can enter the CVE id and leave Name and Description fields empty. under the :code:`Software Vulnerabilities` tab, mark phpMyAdmin 4.4.15 as the software version that is affected by this CVE.  Then, under the :code:`Vulnerable Files Mapping` tab, add the path to each file from the root of the application. In a similar fashion, add the :code:`Vulnerable Lines Mapping` and :code:`Vulnerable Functions Mapping` for the same CVE.
 
 Finding And Running The Exploit
 -------------------------------
@@ -158,25 +161,71 @@ Using The Application & Recording The Code Coverage
 
 In order to debloat the application, first we have to record a representative code coverage. This way, we can identify the parts of the application that are required by the users. For instance, if users exercise the create/drop database functionality, we want to keep it and remove the export functionality if it has never been used.
 
-We have various ways to model the user behavior, in this tutorial we focus on **scripting common tasks as Selenium scripts** and the **monkey testing**.
+We have various ways to model the user behavior, in this tutorial we focus on **scripting common tasks as Selenium scripts** and the **monkey testing**. 
+The template for these tests are under :code:`Tests` directory.
 
 | **[Selenium scripts]**
-| - Provide the login
-| - Walk them through the provided functions
-| - Provide the empty run a query and they have to fill the selector for query text box and run query buttons and success scenario
-| - Provide the code for creation of a database and other basic tasks.
+| Using your favorite text editor, open :code:`/home/ubuntu/debloating_phpMyAdmin/Tests/Selenium-Tests/phpMyadmin/pma_440_tutorials.py`. The script comes with a set of helper functions to set proper cookies for the debloating backend, find certain elements on the page and click on buttons and fill textboxes. The main flow of tests for our current playground is as follows:
 
-.. note::
-   (Disable code mirror)
+- :code:`pma.login()`: will login to the phpMyAdmin application.
+- :code:`pma.create_database()`: will create a dummy database and a table.
+- :code:`pma.input_data_to_table()`: will use the web UI to insert data into the new table.
+- :code:`pma.run_query()`: will run a text query against our database.
+- :code:`pma.browse_table()`: will use the UI to list the rows in the table.
+- :code:`pma.drop_database()`: will drop the newly created database.
+
+Throughout this code, there are specific placeholders that need to be filled by you as part of this tutorial. You can find them by searching for :code:`# UPDATE HERE`. There are 6 places that need to be filled.
+
+- :code:`# UPDATE HERE (1/6)`: Here, your task is to fill in the path to your target web application. In this case :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/`.
+- :code:`# UPDATE HERE (2/6)`: Should be set to the **Software Id** that is returned by the admin panel after you create a new application.
+- :code:`# UPDATE HERE (3/6)`: Is the **Software Version Id**, again extracted from the admin panel.
+- :code:`# UPDATE HERE (4/6)`: **fill_textbox** is one of the helper functions that accepts an XPATH selector as its first input, and the string to be filled within that textbox as the second input. You can take a look at this cheat sheet for XPath selectors (https://devhints.io/xpath). For this instance, we want to select the login username textbox based on its id. Using browser developer tools inspect the username textbox field and extract the id and write the proper XPATH.
+- :code:`# UPDATE HERE (5/6)`: Similar to the step above, fill the proper XPATH for password field.
+- :code:`# UPDATE HERE (6/6)`: Fill the proper XPATH for Go button that is then used by :code:`click_element` to click on this button and login. At the end of this step, the Selenium script should be able to login to the application.
+
+On a separate note, by setting specific environment variables, we can label our manual requests that do not carry specific cookies used by the debloating pipeline. For that, update the :code:`.htaccess` file within the root of phpMyAdmin with the **Software Id** and **Software Version Id** that you used in the Selenium script.
+
+Now you can run the selenium script and watch Chrome browser open and exercise the application features. The console will show logs about the current step and debugging information. :code:`python3 pma_440_tutorials.py`.
+
+.. image:: _static/devtools.png
+   :align: center
+
+.. admonition:: Solution
+   :class: toggle
+
+      - Username selector: :code:`'//*[@id="input_username"]'`
+      - Password selector: :code:`'//*[@id="input_password"]'`
+      - Go button selector: :code:`'//*[@id="input_go"]'`
 
 | **[Monkey testing]**
-|  Is a form of automated random testing, similar to fuzzing. By sending random keystrokes and events to the page, we navigate to different parts of the application and invoke different features. The main idea is to exercise easy to reach features.
+| Is a form of automated random testing, similar to fuzzing. By sending random keystrokes and events to the page, we navigate to different parts of the application and invoke different features. The main idea is to exercise easy to reach features.
 
-.. note::
-   Prepare the script
+- **Install TamperMonkey**: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from :code:`/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJSpma_440_GremlinsJS.user.js/` as a new script. There are two place holders that you need to update with the proper id from the database as before.
+- **Login to phpMyAdmin**: Disable this new script and navigate to :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/`, in order to prevent the Monkey tester from performing unwanted tasks such as dropping other databases, create a limited user under phpMyAdmin and login to that user.
+- **Unleash the Gremlins**: Once inside phpMyAdmin, from the TamperMonkey icon, enable this script and you will see the monkeys start to interact with the application and nagivate to different pages within the application.
+- **Disable the monkey tester**: This test is equivalent to fuzzing, as such it should be left running for extended hours. For the purposes of this tutorial, it suffices to observe how it works and you can close the current browser tab and disable the Monkey tester.
 
-| **[Check he coverage in the admin panel]**
-|  To make sure we have correctly recorded the code coverage as you are working with the application, navigate to http://localhost:8086/admin/report. By clicking on the tests for our target web application, you can view specific files (e.g., index.php) being used and you can also view the coverage of specific lines within these files.
+
+| **[Check the coverage in the admin panel]**
+| To make sure we have correctly recorded the code coverage as you are working with the application, navigate to http://localhost:8086/admin/report. By clicking on the tests for our target web application, you can view specific files (e.g., index.php) being used and you can also view the coverage of specific lines within these files.
+
+Under the same page:
+
+- **File Coverage** shows the vulnerable files and whether they were used during that specific test. Similarly, you can use the multi select checkbox and the buttons on top to get the same information for the union of multiple tests.
+- **Function Coverage** reports whether a vulnerable function has been triggered during the tests or not. Notice that only the vulnerable functions are shown where the parent file has been covered.
+- **Line Coverage** shows whether the specific lines for the specific CVEs were executed during tests.
+- By clicking on individual test groups, you can see specific files and the line numbers that were executed within those files.
+
+You should see that some files related to this vulnerability has been covered but none of the functions nor the lines are triggered. As a result, function debloating should be able to fully remove this CVE from our applications and prevent exploitation.
+
+.. admonition:: Solution
+   :class: toggle
+
+      - File :code:`libraries/tbl_columns_definition_form.lib.php` is covered.
+      - File :code:`libraries/Tracker.class.php` is covered.
+      - File :code:`libraries/plugins/export/ExportSql.class.php` is not covered.
+      - File :code:`libraries/TableSearch.class.php` is not covered.
+      - None of the functions or lines are covered.
 
 | **[Look at the source code metrics]**
 | Before we debloat the application, let’s look at some of the metrics that can be extracted from the source code. For that, we use the phpmetrics (https://github.com/phpmetrics/PhpMetrics) package. It comes preinstalled in the **Training Web** container.
@@ -209,14 +258,17 @@ This step can take a while as we are rewriting the source code of the whole appl
 Verifying The Functionality Of The Application
 ----------------------------------------------
 
-It’s time to go back to the application and start using it. For this step, we will be using http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages/ since we do not want to train the application further. Repeat the tasks that you did before and make sure everything works. These include tasks such as login, and the items covered by the selenium scripts.
+It’s time to go back to the application and start using it. For this step, we will be using http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages/ since we do not want to train the application further. Repeat the tasks that you did before and make sure everything works. These include tasks such as login, and the items covered by the selenium scripts. Depending on the completeness of your tests, you will have a more functional application after debloating.
 
-If there was an issue with the training part, you might try to use a feature that has been removed. If you think that you need to go back and retrain the application, first, revert the original copy of the application from the web/original directory.
+If there was an issue with the training part, you might try to use a feature that has been removed. If this happens, you will usually receive an error through the application UI. In some cases where an AJAX call fails, you can look at the Apache error.log to identify whether a removed file or function has been called. You can view the logs on Pulic Web container by first extracting the container id using :code:`docker ps` and then :code:`docker logs -f [container_id] | grep Removed`.
+
+If you think that you need to go back and retrain the application, first, revert the original copy of the application from the web/original directory.
 
 - Navigate to the “web” directory.
 - :code:`cp -R original/phpMyAdmin-4.4.15.6-all-languages .`
 - :code:`chmod -R 777 phpMyAdmin-4.4.15.6-all-languages/`
 - :code:`chmod 644 phpMyAdmin-4.4.15.6-all-languages/config.inc.php`
+- Navigate to :code:`http://localhost:8086/admin/software_file/description` and **rewrite destructors**.
 
 Now that we have restored the original non-debloated application, you can go back to the training interface (http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/) and rerun our tests to complete the training phase. Repeat the debloating and continue to this step until you are satisfied with the preserved functionality within the debloating application.
 
@@ -230,10 +282,12 @@ This exploit uses  a vulnerability in table find and replace functionality withi
 .. admonition:: Solution
    :class: toggle
 
-      Rerunning same as before, this will output:
+      Rerunning same as before, this will either output:
       
       | Exploit failed!
       | Try to manually set exploit parameters like --table, --database and --token. Remember that servers with PHP version greater than 5.4.6 is not exploitable, because of warning about null byte in regexp
+
+      Or fail to parse the JSON because the field that its expecting is not there.
 
 Source Code Metrics After Debloating
 ------------------------------------
@@ -245,9 +299,18 @@ Now it’s time to run phpmetrics again and see the reduction in lines of code a
 
       Similar to previous step with reduced lines of code and reduced cyclomatic complexity.
 
+      | Executing system analyzes…
+      | LOC Lines of code 24877
+      | Logical lines of code 14176
+      | …
+      | Complexity Average Cyclomatic 
+      | complexity by class 24.85
+      | Average Relative system complexity 334.41
+      | Average Difficulty 13.03
+      | …
+      | Done
+
 Working With Other Debloated Applications
 -----------------------------------------
 
-TODO: We can also provide exploits for WordPress and Magento, maybe skip the training and provide the already debloated applications and just tell them how to test the original and the debloated versions against these exploits.
-
-TODO: What to do about Ajax calls that cause an error, we can have a custom code that takes care of this.
+If you are interested in working with other application templates in our dataset, under **debloating_Mediawiki** and **debloating_WordPress** we have provided docker-containers with original and debloated version of applications. You should shutdown the existing container and start the other containers using :code:`docker-compose down` in debloating_phpMyAdmin directory and :code:`docker-compose up -d` in Mediawiki or WordPress directories.
