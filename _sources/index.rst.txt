@@ -7,7 +7,7 @@
 SSSS'20 Playground
 ==================
 
-Welcome to the **Less is more** playground for SSSS'20. In this tutorial, you will get hands on experience with using our pipeline to debloat phpMyAdmin web application. You will become familiar with the debloating administration panel, setup your own tests and see how a real exploit is stopped after debloating.
+Welcome to the **Less is more** playground for SSSS'20. In this tutorial, you will get hands on experience with using our pipeline to debloat a phpMyAdmin web application. You will become familiar with the debloating administration panel, setup your own tests and see how a real exploit is stopped after debloating.
 
 Installation
 ------------
@@ -15,8 +15,8 @@ Installation
 .. note::
    Skip the installation section for SSSS'20 event as the container has already been setup for you.
 
-1. Download the project files https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing
-2. Decompress the tar file (tar zxvf debloating_phpMyAdmin.tar.gz)
+1. Download the project files `debloating_phpMyAdmin.tar.gz <https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing>`_
+2. Decompress the tar file :code:`tar zxvf debloating_phpMyAdmin.tar.gz`
 3. Run :code:`docker-compose up -d` in the root directory
 4. You can view the logs using :code:`docker-compose logs -f -t`
 
@@ -33,7 +33,8 @@ Docker Containers
 - **db:** This container hosts the databases for your web applications as well as the code coverage information. It has no public interface but is accessible to other docker containers through the “db” hostname. 
 
 .. note::
-   The credentials to log in to phpMyAdmin is username: root, password: root.
+   - The same web application files are mounted as a volume on web and admin containers. That means the "web" directory includes the same files that you would see under "/var/www/html/" inside the docker containers.
+   - The credentials to log in to phpMyAdmin is: username: root, password: root.
 
 Accessing The Containers
 ------------------------
@@ -64,7 +65,10 @@ Steps to follow:
 | Under the “Debloating” tab, add the current directory for the target application. “/var/www/html/phpMyAdmin-4.4.15.6-all-languages” in our case. This step will add the list of files to the code_coverage database so that we can track their line coverage later on.
 
 | **[Prepare the class destructors]**
-| Under the “Debloating” tab (http://localhost:8086/admin/software_file/description), click on the “rewrite destructors” button. This will make sure that we record the full code coverage for our target application. This step can take around a minute and then it will show a text log of the destructors that have been rewritten and prepared for debloating.
+| Under the “Debloating” tab (http://localhost:8086/admin/software_file/description), click on the “Rewrite Destructors” button. This will make sure that we record the full code coverage for our target application. This step can take around a minute and then it will show a text log of the destructors that have been rewritten and prepared for debloating.
+
+.. note::
+   Preparing the destructors requires admin panels access to modify the source code of our target web application. The same "web" directory which includes web application files on the host machine is mounted to "/var/www/html" directory under web and admin docker containers. If you see a permission error while rewriting the destructors, use :code:`./ssh_admin.sh` script to get into the admin container, navigate to the target web application directory (:code:`cd /var/www/html/phpMyAdmin-4.4.15.6-all-languages`) and change the owner of the files to the web server user (:code:`chown -R www-data:www-data .`).
 
 Adding The CVE Information To The Vulnerability Database
 --------------------------------------------------------
@@ -108,20 +112,23 @@ Steps to follow:
       - libraries/Tracker.class.php
       - libraries/plugins/export/ExportSql.class.php
       - libraries/tbl_columns_definition_form.lib.php
+      - test/libraries/core/PMA_warnMissingExtension_test.php 
+      
+      **test/libraries/core/PMA_warnMissingExtension_test.php** is included in the patch but since it is a unit test, it is only accessible locally and does not directly contribute to the vulnerability, also it is not exploitable.
 
 | **[Match the vulnerable lines]**
-| Different minor versions of the same application might have slightly different source code. To make sure the line number mapping is correct, we should not rely on the line numbers of the Git commit. Instead, we confirm the line numbers on our own application. For this, look into the :code:`web/phpMyAdmin-4.4.15.6-all-languages/` directory and find the lines that were removed or changed from the vulnerable version of the application (red lines).
+| The process to prepare PHP class destructors for debloating rewrites the source code and at times changes the line number compared to the one in Git diff. To make sure the line number mapping is correct, we should not rely on the line numbers of the Git commit. Instead, we confirm the line numbers on our own local copy of the application. For this, using your favorite text editor look into the :code:`web/phpMyAdmin-4.4.15.6-all-languages/` directory mounted under your users home directory on the virtual machine and find the lines that were removed or changed from the vulnerable version of the application (red lines). If you are using gedit over VNC, you can enable line numbers by clicking on the cog icon, under preferences, click display line numbers.
 
 .. admonition:: Solution
    :class: toggle
 
-      - libraries/TableSearch.class.php: 1410
-      - libraries/Tracker.class.php: 923
-      - libraries/plugins/export/ExportSql.class.php: 1255
-      - libraries/tbl_columns_definition_form.lib.php: 795
+      - libraries/TableSearch.class.php: 1041
+      - libraries/Tracker.class.php: 662
+      - libraries/plugins/export/ExportSql.class.php: 854
+      - libraries/tbl_columns_definition_form.lib.php: 488
 
 | **[Identify the function lines]**
-| Whenever the vulnerability resides inside a PHP function, we also include that information in our database. For that, write down the line of the first executable line within the function that includes the vulnerable code. In the following example, the vulnerability is on line **448** and the first executable inside the function is on line **447**. So in this case we note down **PMA_getNumberOfFieldsFromRequest():447**.
+| Whenever the vulnerability resides inside a PHP function, we also include that information in our database. For that, write down the line of the first executable line within the function that includes the vulnerable code. In the following example, the vulnerability is on line **448** and the first executable inside the function is on line **447**. So in this case we note down **PMA_getNumberOfFieldsFromRequest():447**. Make sure to write down both the function name as well as the line numbers, we will need both of them to populate our database later.
 
 .. image:: _static/sourcecode.png
    :align: center
@@ -129,10 +136,10 @@ Steps to follow:
 .. admonition:: Solution
    :class: toggle
 
-      - libraries/TableSearch.class.php:**_getRegexReplaceRows($columnIndex, $find, $replaceWith, $charSet):1390**
-      - libraries/Tracker.class.php:**handleQuery($query):864**
-      - libraries/plugins/export/ExportSql.class.php:**getTableDef( $db, $table, $crlf, $error_url, $show_dates = false, $add_semicolon = true, $view = false, $update_indexes_increments = true, $aliases = array() ):1098**
-      - libraries/tbl_columns_definition_form.lib.php:**PMA_getHtmlForTransformation($columnNumber, $ci, $ci_offset, $available_mime, $columnMeta, $mime_map, $type_prefix ):783**
+      - libraries/TableSearch.class.php:**_getRegexReplaceRows($columnIndex, $find, $replaceWith, $charSet):1032**
+      - libraries/Tracker.class.php:**handleQuery($query):617**
+      - libraries/plugins/export/ExportSql.class.php:**getTableDef( $db, $table, $crlf, $error_url, $show_dates = false, $add_semicolon = true, $view = false, $update_indexes_increments = true, $aliases = array() ):755**
+      - libraries/tbl_columns_definition_form.lib.php:**PMA_getHtmlForTransformation($columnNumber, $ci, $ci_offset, $available_mime, $columnMeta, $mime_map, $type_prefix ):483**
 
 | **[Add CVE information to database]**
 | With this information, go back to the admin panel, add the CVE information under the :code:`CVE` tab. You can enter the CVE id and leave Name and Description fields empty. under the :code:`Software Vulnerabilities` tab, mark phpMyAdmin 4.4.15 as the software version that is affected by this CVE.  Then, under the :code:`Vulnerable Files Mapping` tab, add the path to each file from the root of the application. In a similar fashion, add the :code:`Vulnerable Lines Mapping` and :code:`Vulnerable Functions Mapping` for the same CVE.
@@ -148,6 +155,9 @@ To demonstrate the power of debloating in removing actual vulnerabilities, we fo
       https://www.exploit-db.com/exploits/40185
 
 Once you download the exploit code, run it against the public interface of your web application which is located at http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages. 
+This exploit takes advantage of a vulnerablity in :code:`preg_replace` function within PHP. Normally, this function takes a regular expression, applies it to a text and replaces every occurance with another text. By supplying the :code:`/e` modifier, PHP will interpret the output of this function as PHP code and execute it, essentially turning it into an eval function call. 
+By appending /e to our regex and using a null string terminator, we can run arbitrary code on target system and achieve RCE. 
+In the public exploit for this vulnerability, but default, the payload is set to :code:`system('uname -a');` but it can be changed to any arbitrary code that will be executed under the PHP/Apache user permissions.
 
 .. admonition:: Solution
    :class: toggle
@@ -198,12 +208,17 @@ Now you can run the selenium script and watch Chrome browser open and exercise t
       - Go button selector: :code:`'//*[@id="input_go"]'`
 
 | **[Monkey testing]**
-| Is a form of automated random testing, similar to fuzzing. By sending random keystrokes and events to the page, we navigate to different parts of the application and invoke different features. The main idea is to exercise easy to reach features.
+| Is a form of automated random testing, similar to fuzzing. By sending random keystrokes and events to the page, we navigate to different parts of the application and invoke different features. The main idea is to exercise easy to reach features. 
 
-- **Install TamperMonkey**: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from :code:`/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJSpma_440_GremlinsJS.user.js/` as a new script. There are two place holders that you need to update with the proper id from the database as before.
+.. note::
+   | **Important details when designing a monkey testing script:** 
+   | There are certain points to consider when designing monkey tests. First, to prevent the monkey tester from logging out of the application, and to increase its coverage inside the application we use JavaScript within our monkey tests to prepare the environment and that includes removing the log out button. Second, we remove all hyperlinks to other domains outside of our test application, to prevent the monkey tester from navigating to other domains. Finally, to address the issue where the monkey tester navigates to a static page (e.g., print preview) where there is no way to get back, we set a timer and restart the monkey tester from the homepage if it gets stuck on the same page for extended periods of time. These details are already builtin to our script.
+
+
+- **Install TamperMonkey**: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from :code:`/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJSpma_440_GremlinsJS.user.js/` as a new script. There are two place holders that you need to update with the proper id from the database as before. Replace the "UPDATE HERE" strings with the Software and Software Version Id similar to Selenium scripts.
 - **Login to phpMyAdmin**: Disable this new script and navigate to :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/`, in order to prevent the Monkey tester from performing unwanted tasks such as dropping other databases, create a limited user under phpMyAdmin and login to that user.
-- **Unleash the Gremlins**: Once inside phpMyAdmin, from the TamperMonkey icon, enable this script and you will see the monkeys start to interact with the application and nagivate to different pages within the application.
-- **Disable the monkey tester**: This test is equivalent to fuzzing, as such it should be left running for extended hours. For the purposes of this tutorial, it suffices to observe how it works and you can close the current browser tab and disable the Monkey tester.
+- **Unleash the Gremlins**: Once inside phpMyAdmin, from the TamperMonkey icon, enable this script and you will see the monkeys start to interact with the application and nagivate to different pages within the application. If you don't instantly see the clicks happening on the page, try refreshing the page to make sure the monkey testing script is injected in the page. In general, if something goes wrong, you can open the browser console and see the JavaScript errors logs and debug your monkey testing code.
+- **Disable the monkey tester**: This test is equivalent to fuzzing, as such it should be left running for extended hours. For the purposes of this tutorial, it suffices to observe how it works and you can close the current browser tab and disable the Monkey tester after a short period after time.
 
 
 | **[Check the coverage in the admin panel]**
@@ -251,7 +266,7 @@ Debloating The Application
 --------------------------
 
 Once you are happy with the training, we can go ahead and debloat the unused parts. Navigate to the admin panel to the Debloating tab: http://localhost:8086/admin/software_file/description.
-Here, we have the option of file and function debloating. Remember that function debloating is a superset of file debloating where both unused files and unused functions are removed. Let’s click on function debloating.
+Here, we have the option of file and function debloating. Remember that function debloating is a superset of file debloating where both unused files and unused functions are removed. Let’s click on "Debloat Functions" button.
 
 This step can take a while as we are rewriting the source code of the whole application. If everything goes well, the text output will list the files and functions and whether they were covered, hence preserved or unused and removed.
 
@@ -272,6 +287,14 @@ If you think that you need to go back and retrain the application, first, revert
 
 Now that we have restored the original non-debloated application, you can go back to the training interface (http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/) and rerun our tests to complete the training phase. Repeat the debloating and continue to this step until you are satisfied with the preserved functionality within the debloating application.
 
+.. note::
+   | **Starting fresh**
+   | If for whatever reason something goes wrong that is beyond a simple fix like replacing the web appliction files, you can follow these instructions to rebuild the environment from scratch and go back to the state at the beginning of this tutorial.
+
+   - **Turn off the docker containers:** Navigate to :code:`~/debloating_phpMyAdmin/`, type :code:`docker-compose down`.
+   - **Restore original files:** Remove :code:`~/debloating_phpMyAdmin/` directory and decompress the tarball :code:`tar zxvf debloating_phpMyAdmin.tar.gz`.
+   - **Rebuild docker containers:** Navigate to :code:`~/debloating_phpMyAdmin/` and type :code:`docker-compose up -d`, you can use :code:`docker ps` to make sure all four containers are running at this point.
+   - **Set the file permissions:** Using :code:`chmod -R 777 ~/debloating_phpMyAdmin/web/phpMyAdmin-4.4.15.6-all-languages/` and :code:`chmod 644 ~/debloating_phpMyAdmin/web/phpMyAdmin-4.4.15.6-all-languages/config.inc.php`. Then use :code:`./ssh_admin.sh` and take ownership of web files :code:`chown -R www-data:www-data /var/www/html/phpMyAdmin-4.4.15.6-all-languages`.
 
 Running The Exploit On The Debloated Version
 --------------------------------------------

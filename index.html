@@ -40,8 +40,10 @@
     <link rel="search" title="Search" href="search.html" />
  <script type="text/javascript">
     $(document).ready(function() {
-        //
-        //
+        $(document).ready(function () {
+        $('a[href^="http://"], a[href^="https://"]').not('a[class*=internal]').attr('target', '_blank');
+        });
+
         $(".toggle > *").hide();
         $(".toggle .admonition-title").show();
         $(".toggle .admonition-title").click(function() {
@@ -179,7 +181,7 @@
             
   <div class="section" id="ssss-20-playground">
 <h1>SSSS’20 Playground<a class="headerlink" href="#ssss-20-playground" title="Permalink to this headline">¶</a></h1>
-<p>Welcome to the <strong>Less is more</strong> playground for SSSS’20. In this tutorial, you will get hands on experience with using our pipeline to debloat phpMyAdmin web application. You will become familiar with the debloating administration panel, setup your own tests and see how a real exploit is stopped after debloating.</p>
+<p>Welcome to the <strong>Less is more</strong> playground for SSSS’20. In this tutorial, you will get hands on experience with using our pipeline to debloat a phpMyAdmin web application. You will become familiar with the debloating administration panel, setup your own tests and see how a real exploit is stopped after debloating.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
@@ -187,8 +189,8 @@
 <p>Skip the installation section for SSSS’20 event as the container has already been setup for you.</p>
 </div>
 <ol class="arabic simple">
-<li><p>Download the project files <a class="reference external" href="https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing">https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing</a></p></li>
-<li><p>Decompress the tar file (tar zxvf debloating_phpMyAdmin.tar.gz)</p></li>
+<li><p>Download the project files <a class="reference external" href="https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing">debloating_phpMyAdmin.tar.gz</a></p></li>
+<li><p>Decompress the tar file <code class="code docutils literal notranslate"><span class="pre">tar</span> <span class="pre">zxvf</span> <span class="pre">debloating_phpMyAdmin.tar.gz</span></code></p></li>
 <li><p>Run <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">-d</span></code> in the root directory</p></li>
 <li><p>You can view the logs using <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">logs</span> <span class="pre">-f</span> <span class="pre">-t</span></code></p></li>
 </ol>
@@ -204,7 +206,10 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The credentials to log in to phpMyAdmin is username: root, password: root.</p>
+<ul class="simple">
+<li><p>The same web application files are mounted as a volume on web and admin containers. That means the “web” directory includes the same files that you would see under “/var/www/html/” inside the docker containers.</p></li>
+<li><p>The credentials to log in to phpMyAdmin is: username: root, password: root.</p></li>
+</ul>
 </div>
 </div>
 <div class="section" id="accessing-the-containers">
@@ -239,7 +244,11 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>[Prepare the class destructors]</strong></div>
-<div class="line">Under the “Debloating” tab (<a class="reference external" href="http://localhost:8086/admin/software_file/description">http://localhost:8086/admin/software_file/description</a>), click on the “rewrite destructors” button. This will make sure that we record the full code coverage for our target application. This step can take around a minute and then it will show a text log of the destructors that have been rewritten and prepared for debloating.</div>
+<div class="line">Under the “Debloating” tab (<a class="reference external" href="http://localhost:8086/admin/software_file/description">http://localhost:8086/admin/software_file/description</a>), click on the “Rewrite Destructors” button. This will make sure that we record the full code coverage for our target application. This step can take around a minute and then it will show a text log of the destructors that have been rewritten and prepared for debloating.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Preparing the destructors requires admin panels access to modify the source code of our target web application. The same “web” directory which includes web application files on the host machine is mounted to “/var/www/html” directory under web and admin docker containers. If you see a permission error while rewriting the destructors, use <code class="code docutils literal notranslate"><span class="pre">./ssh_admin.sh</span></code> script to get into the admin container, navigate to the target web application directory (<code class="code docutils literal notranslate"><span class="pre">cd</span> <span class="pre">/var/www/html/phpMyAdmin-4.4.15.6-all-languages</span></code>) and change the owner of the files to the web server user (<code class="code docutils literal notranslate"><span class="pre">chown</span> <span class="pre">-R</span> <span class="pre">www-data:www-data</span> <span class="pre">.</span></code>).</p>
 </div>
 </div>
 <div class="section" id="adding-the-cve-information-to-the-vulnerability-database">
@@ -290,37 +299,39 @@
 <li><p>libraries/Tracker.class.php</p></li>
 <li><p>libraries/plugins/export/ExportSql.class.php</p></li>
 <li><p>libraries/tbl_columns_definition_form.lib.php</p></li>
+<li><p>test/libraries/core/PMA_warnMissingExtension_test.php</p></li>
 </ul>
+<p><strong>test/libraries/core/PMA_warnMissingExtension_test.php</strong> is included in the patch but since it is a unit test, it is only accessible locally and does not directly contribute to the vulnerability, also it is not exploitable.</p>
 </div></blockquote>
 </div>
 <div class="line-block">
 <div class="line"><strong>[Match the vulnerable lines]</strong></div>
-<div class="line">Different minor versions of the same application might have slightly different source code. To make sure the line number mapping is correct, we should not rely on the line numbers of the Git commit. Instead, we confirm the line numbers on our own application. For this, look into the <code class="code docutils literal notranslate"><span class="pre">web/phpMyAdmin-4.4.15.6-all-languages/</span></code> directory and find the lines that were removed or changed from the vulnerable version of the application (red lines).</div>
+<div class="line">The process to prepare PHP class destructors for debloating rewrites the source code and at times changes the line number compared to the one in Git diff. To make sure the line number mapping is correct, we should not rely on the line numbers of the Git commit. Instead, we confirm the line numbers on our own local copy of the application. For this, using your favorite text editor look into the <code class="code docutils literal notranslate"><span class="pre">web/phpMyAdmin-4.4.15.6-all-languages/</span></code> directory mounted under your users home directory on the virtual machine and find the lines that were removed or changed from the vulnerable version of the application (red lines). If you are using gedit over VNC, you can enable line numbers by clicking on the cog icon, under preferences, click display line numbers.</div>
 </div>
 <div class="toggle admonition">
 <p class="admonition-title">Solution</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>libraries/TableSearch.class.php: 1410</p></li>
-<li><p>libraries/Tracker.class.php: 923</p></li>
-<li><p>libraries/plugins/export/ExportSql.class.php: 1255</p></li>
-<li><p>libraries/tbl_columns_definition_form.lib.php: 795</p></li>
+<li><p>libraries/TableSearch.class.php: 1041</p></li>
+<li><p>libraries/Tracker.class.php: 662</p></li>
+<li><p>libraries/plugins/export/ExportSql.class.php: 854</p></li>
+<li><p>libraries/tbl_columns_definition_form.lib.php: 488</p></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="line-block">
 <div class="line"><strong>[Identify the function lines]</strong></div>
-<div class="line">Whenever the vulnerability resides inside a PHP function, we also include that information in our database. For that, write down the line of the first executable line within the function that includes the vulnerable code. In the following example, the vulnerability is on line <strong>448</strong> and the first executable inside the function is on line <strong>447</strong>. So in this case we note down <strong>PMA_getNumberOfFieldsFromRequest():447</strong>.</div>
+<div class="line">Whenever the vulnerability resides inside a PHP function, we also include that information in our database. For that, write down the line of the first executable line within the function that includes the vulnerable code. In the following example, the vulnerability is on line <strong>448</strong> and the first executable inside the function is on line <strong>447</strong>. So in this case we note down <strong>PMA_getNumberOfFieldsFromRequest():447</strong>. Make sure to write down both the function name as well as the line numbers, we will need both of them to populate our database later.</div>
 </div>
 <img alt="_images/sourcecode.png" class="align-center" src="_images/sourcecode.png" />
 <div class="toggle admonition">
 <p class="admonition-title">Solution</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>libraries/TableSearch.class.php:<strong>_getRegexReplaceRows($columnIndex, $find, $replaceWith, $charSet):1390</strong></p></li>
-<li><p>libraries/Tracker.class.php:<strong>handleQuery($query):864</strong></p></li>
-<li><p>libraries/plugins/export/ExportSql.class.php:<strong>getTableDef( $db, $table, $crlf, $error_url, $show_dates = false, $add_semicolon = true, $view = false, $update_indexes_increments = true, $aliases = array() ):1098</strong></p></li>
-<li><p>libraries/tbl_columns_definition_form.lib.php:<strong>PMA_getHtmlForTransformation($columnNumber, $ci, $ci_offset, $available_mime, $columnMeta, $mime_map, $type_prefix ):783</strong></p></li>
+<li><p>libraries/TableSearch.class.php:<strong>_getRegexReplaceRows($columnIndex, $find, $replaceWith, $charSet):1032</strong></p></li>
+<li><p>libraries/Tracker.class.php:<strong>handleQuery($query):617</strong></p></li>
+<li><p>libraries/plugins/export/ExportSql.class.php:<strong>getTableDef( $db, $table, $crlf, $error_url, $show_dates = false, $add_semicolon = true, $view = false, $update_indexes_increments = true, $aliases = array() ):755</strong></p></li>
+<li><p>libraries/tbl_columns_definition_form.lib.php:<strong>PMA_getHtmlForTransformation($columnNumber, $ci, $ci_offset, $available_mime, $columnMeta, $mime_map, $type_prefix ):483</strong></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -338,7 +349,10 @@
 <div><p><a class="reference external" href="https://www.exploit-db.com/exploits/40185">https://www.exploit-db.com/exploits/40185</a></p>
 </div></blockquote>
 </div>
-<p>Once you download the exploit code, run it against the public interface of your web application which is located at <a class="reference external" href="http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages">http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages</a>.</p>
+<p>Once you download the exploit code, run it against the public interface of your web application which is located at <a class="reference external" href="http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages">http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages</a>.
+This exploit takes advantage of a vulnerablity in <code class="code docutils literal notranslate"><span class="pre">preg_replace</span></code> function within PHP. Normally, this function takes a regular expression, applies it to a text and replaces every occurance with another text. By supplying the <code class="code docutils literal notranslate"><span class="pre">/e</span></code> modifier, PHP will interpret the output of this function as PHP code and execute it, essentially turning it into an eval function call.
+By appending /e to our regex and using a null string terminator, we can run arbitrary code on target system and achieve RCE.
+In the public exploit for this vulnerability, but default, the payload is set to <code class="code docutils literal notranslate"><span class="pre">system('uname</span> <span class="pre">-a');</span></code> but it can be changed to any arbitrary code that will be executed under the PHP/Apache user permissions.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Solution</p>
 <blockquote>
@@ -393,11 +407,18 @@ The template for these tests are under <code class="code docutils literal notran
 <div class="line"><strong>[Monkey testing]</strong></div>
 <div class="line">Is a form of automated random testing, similar to fuzzing. By sending random keystrokes and events to the page, we navigate to different parts of the application and invoke different features. The main idea is to exercise easy to reach features.</div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line"><strong>Important details when designing a monkey testing script:</strong></div>
+<div class="line">There are certain points to consider when designing monkey tests. First, to prevent the monkey tester from logging out of the application, and to increase its coverage inside the application we use JavaScript within our monkey tests to prepare the environment and that includes removing the log out button. Second, we remove all hyperlinks to other domains outside of our test application, to prevent the monkey tester from navigating to other domains. Finally, to address the issue where the monkey tester navigates to a static page (e.g., print preview) where there is no way to get back, we set a timer and restart the monkey tester from the homepage if it gets stuck on the same page for extended periods of time. These details are already builtin to our script.</div>
+</div>
+</div>
 <ul class="simple">
-<li><p><strong>Install TamperMonkey</strong>: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from <code class="code docutils literal notranslate"><span class="pre">/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJSpma_440_GremlinsJS.user.js/</span></code> as a new script. There are two place holders that you need to update with the proper id from the database as before.</p></li>
+<li><p><strong>Install TamperMonkey</strong>: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from <code class="code docutils literal notranslate"><span class="pre">/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJSpma_440_GremlinsJS.user.js/</span></code> as a new script. There are two place holders that you need to update with the proper id from the database as before. Replace the “UPDATE HERE” strings with the Software and Software Version Id similar to Selenium scripts.</p></li>
 <li><p><strong>Login to phpMyAdmin</strong>: Disable this new script and navigate to <code class="code docutils literal notranslate"><span class="pre">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/</span></code>, in order to prevent the Monkey tester from performing unwanted tasks such as dropping other databases, create a limited user under phpMyAdmin and login to that user.</p></li>
-<li><p><strong>Unleash the Gremlins</strong>: Once inside phpMyAdmin, from the TamperMonkey icon, enable this script and you will see the monkeys start to interact with the application and nagivate to different pages within the application.</p></li>
-<li><p><strong>Disable the monkey tester</strong>: This test is equivalent to fuzzing, as such it should be left running for extended hours. For the purposes of this tutorial, it suffices to observe how it works and you can close the current browser tab and disable the Monkey tester.</p></li>
+<li><p><strong>Unleash the Gremlins</strong>: Once inside phpMyAdmin, from the TamperMonkey icon, enable this script and you will see the monkeys start to interact with the application and nagivate to different pages within the application. If you don’t instantly see the clicks happening on the page, try refreshing the page to make sure the monkey testing script is injected in the page. In general, if something goes wrong, you can open the browser console and see the JavaScript errors logs and debug your monkey testing code.</p></li>
+<li><p><strong>Disable the monkey tester</strong>: This test is equivalent to fuzzing, as such it should be left running for extended hours. For the purposes of this tutorial, it suffices to observe how it works and you can close the current browser tab and disable the Monkey tester after a short period after time.</p></li>
 </ul>
 <div class="line-block">
 <div class="line"><strong>[Check the coverage in the admin panel]</strong></div>
@@ -452,7 +473,7 @@ The template for these tests are under <code class="code docutils literal notran
 <div class="section" id="debloating-the-application">
 <h2>Debloating The Application<a class="headerlink" href="#debloating-the-application" title="Permalink to this headline">¶</a></h2>
 <p>Once you are happy with the training, we can go ahead and debloat the unused parts. Navigate to the admin panel to the Debloating tab: <a class="reference external" href="http://localhost:8086/admin/software_file/description">http://localhost:8086/admin/software_file/description</a>.
-Here, we have the option of file and function debloating. Remember that function debloating is a superset of file debloating where both unused files and unused functions are removed. Let’s click on function debloating.</p>
+Here, we have the option of file and function debloating. Remember that function debloating is a superset of file debloating where both unused files and unused functions are removed. Let’s click on “Debloat Functions” button.</p>
 <p>This step can take a while as we are rewriting the source code of the whole application. If everything goes well, the text output will list the files and functions and whether they were covered, hence preserved or unused and removed.</p>
 </div>
 <div class="section" id="verifying-the-functionality-of-the-application">
@@ -468,6 +489,19 @@ Here, we have the option of file and function debloating. Remember that function
 <li><p>Navigate to <code class="code docutils literal notranslate"><span class="pre">http://localhost:8086/admin/software_file/description</span></code> and <strong>rewrite destructors</strong>.</p></li>
 </ul>
 <p>Now that we have restored the original non-debloated application, you can go back to the training interface (<a class="reference external" href="http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/</a>) and rerun our tests to complete the training phase. Repeat the debloating and continue to this step until you are satisfied with the preserved functionality within the debloating application.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line"><strong>Starting fresh</strong></div>
+<div class="line">If for whatever reason something goes wrong that is beyond a simple fix like replacing the web appliction files, you can follow these instructions to rebuild the environment from scratch and go back to the state at the beginning of this tutorial.</div>
+</div>
+<ul class="simple">
+<li><p><strong>Turn off the docker containers:</strong> Navigate to <code class="code docutils literal notranslate"><span class="pre">~/debloating_phpMyAdmin/</span></code>, type <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">down</span></code>.</p></li>
+<li><p><strong>Restore original files:</strong> Remove <code class="code docutils literal notranslate"><span class="pre">~/debloating_phpMyAdmin/</span></code> directory and decompress the tarball <code class="code docutils literal notranslate"><span class="pre">tar</span> <span class="pre">zxvf</span> <span class="pre">debloating_phpMyAdmin.tar.gz</span></code>.</p></li>
+<li><p><strong>Rebuild docker containers:</strong> Navigate to <code class="code docutils literal notranslate"><span class="pre">~/debloating_phpMyAdmin/</span></code> and type <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">-d</span></code>, you can use <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code> to make sure all four containers are running at this point.</p></li>
+<li><p><strong>Set the file permissions:</strong> Using <code class="code docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">-R</span> <span class="pre">777</span> <span class="pre">~/debloating_phpMyAdmin/web/phpMyAdmin-4.4.15.6-all-languages/</span></code> and <code class="code docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">644</span> <span class="pre">~/debloating_phpMyAdmin/web/phpMyAdmin-4.4.15.6-all-languages/config.inc.php</span></code>. Then use <code class="code docutils literal notranslate"><span class="pre">./ssh_admin.sh</span></code> and take ownership of web files <code class="code docutils literal notranslate"><span class="pre">chown</span> <span class="pre">-R</span> <span class="pre">www-data:www-data</span> <span class="pre">/var/www/html/phpMyAdmin-4.4.15.6-all-languages</span></code>.</p></li>
+</ul>
+</div>
 </div>
 <div class="section" id="running-the-exploit-on-the-debloated-version">
 <h2>Running The Exploit On The Debloated Version<a class="headerlink" href="#running-the-exploit-on-the-debloated-version" title="Permalink to this headline">¶</a></h2>
