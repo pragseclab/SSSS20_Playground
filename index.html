@@ -186,14 +186,19 @@
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Skip the installation section for SSSS’20 event as the container has already been setup for you.</p>
+<p>Skip the installation section for SSSS’20 event as the environment has already been setup for you.</p>
 </div>
-<ol class="arabic simple">
+<div class="toggle admonition">
+<p class="admonition-title">Installation details</p>
+<blockquote>
+<div><ol class="arabic simple">
 <li><p>Download the project files <a class="reference external" href="https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing">debloating_phpMyAdmin.tar.gz</a></p></li>
 <li><p>Decompress the tar file <code class="code docutils literal notranslate"><span class="pre">tar</span> <span class="pre">zxvf</span> <span class="pre">debloating_phpMyAdmin.tar.gz</span></code></p></li>
 <li><p>Run <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">-d</span></code> in the root directory</p></li>
 <li><p>You can view the logs using <code class="code docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">logs</span> <span class="pre">-f</span> <span class="pre">-t</span></code></p></li>
 </ol>
+</div></blockquote>
+</div>
 </div>
 <div class="section" id="docker-containers">
 <h2>Docker Containers<a class="headerlink" href="#docker-containers" title="Permalink to this headline">¶</a></h2>
@@ -306,7 +311,7 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>[Match the vulnerable lines]</strong></div>
-<div class="line">The process to prepare PHP class destructors for debloating rewrites the source code and at times changes the line number compared to the one in Git diff. To make sure the line number mapping is correct, we should not rely on the line numbers of the Git commit. Instead, we confirm the line numbers on our own local copy of the application. For this, using your favorite text editor look into the <code class="code docutils literal notranslate"><span class="pre">web/phpMyAdmin-4.4.15.6-all-languages/</span></code> directory mounted under your users home directory on the virtual machine and find the lines that were removed or changed from the vulnerable version of the application (red lines). If you are using gedit over VNC, you can enable line numbers by clicking on the cog icon, under preferences, click display line numbers.</div>
+<div class="line">The process to prepare PHP class destructors for debloating rewrites the source code and at times changes the line number compared to the one in Git diff. To make sure the line number mapping is correct, we should not rely on the line numbers of the Git commit. Instead, we confirm the line numbers on our own local copy of the application. For this, using your favorite text editor look into the <code class="code docutils literal notranslate"><span class="pre">/home/ubuntu/debloating_phpMyAdmin/web/phpMyAdmin-4.4.15.6-all-languages/</span></code> directory mounted under your users home directory on the virtual machine and find the lines that were removed or changed from the vulnerable version of the application (red lines). If you are using gedit over VNC, you can enable line numbers by clicking on the cog icon, under preferences, click display line numbers.</div>
 </div>
 <div class="toggle admonition">
 <p class="admonition-title">Solution</p>
@@ -321,8 +326,9 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>[Identify the function lines]</strong></div>
-<div class="line">Whenever the vulnerability resides inside a PHP function, we also include that information in our database. For that, write down the line of the first executable line within the function that includes the vulnerable code. In the following example, the vulnerability is on line <strong>448</strong> and the first executable inside the function is on line <strong>447</strong>. So in this case we note down <strong>PMA_getNumberOfFieldsFromRequest():447</strong>. Make sure to write down both the function name as well as the line numbers, we will need both of them to populate our database later.</div>
+<div class="line">Whenever the vulnerability resides inside a PHP function, we also include that information in our database. For that, write down the line number of the first executable line within the function that includes the vulnerable code (i.e., skip function’s opening curly brace and comment lines).</div>
 </div>
+<p>In the following example, the vulnerability is on line <strong>448</strong> and the first executable inside the function is on line <strong>447</strong>. So in this case we note down <strong>PMA_getNumberOfFieldsFromRequest():447</strong>. Make sure to write down both the function name as well as the line numbers, we will need both of them to populate our database later. In our debloating pipeline, we use this line number to mark functions as covered or not, the function name is only used as a label in the admin panel (i.e., you can include or ignore function parameters when adding function name to the database).</p>
 <img alt="_images/sourcecode.png" class="align-center" src="_images/sourcecode.png" />
 <div class="toggle admonition">
 <p class="admonition-title">Solution</p>
@@ -337,7 +343,7 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>[Add CVE information to database]</strong></div>
-<div class="line">With this information, go back to the admin panel, add the CVE information under the <code class="code docutils literal notranslate"><span class="pre">CVE</span></code> tab. You can enter the CVE id and leave Name and Description fields empty. under the <code class="code docutils literal notranslate"><span class="pre">Software</span> <span class="pre">Vulnerabilities</span></code> tab, mark phpMyAdmin 4.4.15 as the software version that is affected by this CVE.  Then, under the <code class="code docutils literal notranslate"><span class="pre">Vulnerable</span> <span class="pre">Files</span> <span class="pre">Mapping</span></code> tab, add the path to each file from the root of the application. In a similar fashion, add the <code class="code docutils literal notranslate"><span class="pre">Vulnerable</span> <span class="pre">Lines</span> <span class="pre">Mapping</span></code> and <code class="code docutils literal notranslate"><span class="pre">Vulnerable</span> <span class="pre">Functions</span> <span class="pre">Mapping</span></code> for the same CVE.</div>
+<div class="line">With this information, go back to the admin panel, add the CVE information under the <code class="code docutils literal notranslate"><span class="pre">CVE</span></code> tab. You can enter the CVE id and leave Name and Description fields empty. Under the <code class="code docutils literal notranslate"><span class="pre">Software</span> <span class="pre">Vulnerabilities</span></code> tab, mark phpMyAdmin 4.4.15 as the software version that is affected by this CVE.  Then, under the <code class="code docutils literal notranslate"><span class="pre">Vulnerable</span> <span class="pre">Files</span> <span class="pre">Mapping</span></code> tab, add the path to each file from the root of the application. In a similar fashion, add the <code class="code docutils literal notranslate"><span class="pre">Vulnerable</span> <span class="pre">Lines</span> <span class="pre">Mapping</span></code> and <code class="code docutils literal notranslate"><span class="pre">Vulnerable</span> <span class="pre">Functions</span> <span class="pre">Mapping</span></code> for the same CVE.</div>
 </div>
 </div>
 <div class="section" id="finding-and-running-the-exploit">
@@ -366,7 +372,8 @@ In the public exploit for this vulnerability, but default, the payload is set to
 </div>
 <div class="section" id="using-the-application-recording-the-code-coverage">
 <h2>Using The Application &amp; Recording The Code Coverage<a class="headerlink" href="#using-the-application-recording-the-code-coverage" title="Permalink to this headline">¶</a></h2>
-<p>In order to debloat the application, first we have to record a representative code coverage. This way, we can identify the parts of the application that are required by the users. For instance, if users exercise the create/drop database functionality, we want to keep it and remove the export functionality if it has never been used.</p>
+<p>In order to debloat the application, first we have to record a representative code coverage. This way, we can identify the parts of the application that are required by the users. For instance, if users exercise the create/drop database functionality, we want to keep it and remove the export functionality if it has never been used.
+In this section, we interact with the “training web” container hosted over <code class="code docutils literal notranslate"><span class="pre">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages</span></code>.</p>
 <p>We have various ways to model the user behavior, in this tutorial we focus on <strong>scripting common tasks as Selenium scripts</strong> and the <strong>monkey testing</strong>.
 The template for these tests are under <code class="code docutils literal notranslate"><span class="pre">Tests</span></code> directory.</p>
 <div class="line-block">
@@ -415,8 +422,14 @@ The template for these tests are under <code class="code docutils literal notran
 </div>
 </div>
 <ul class="simple">
-<li><p><strong>Install TamperMonkey</strong>: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from <code class="code docutils literal notranslate"><span class="pre">/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJSpma_440_GremlinsJS.user.js/</span></code> as a new script. There are two place holders that you need to update with the proper id from the database as before. Replace the “UPDATE HERE” strings with the Software and Software Version Id similar to Selenium scripts.</p></li>
-<li><p><strong>Login to phpMyAdmin</strong>: Disable this new script and navigate to <code class="code docutils literal notranslate"><span class="pre">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/</span></code>, in order to prevent the Monkey tester from performing unwanted tasks such as dropping other databases, create a limited user under phpMyAdmin and login to that user.</p></li>
+<li><p><strong>Install TamperMonkey</strong>: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from <code class="code docutils literal notranslate"><span class="pre">/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJS/pma_440_GremlinsJS.user.js</span></code> as a new script. There are two place holders that you need to update with the proper id from the database as before. Replace the “UPDATE HERE” strings with the Software and Software Version Id similar to Selenium scripts.</p></li>
+<li><p><strong>Login to phpMyAdmin</strong>: Disable this new script and navigate to <code class="code docutils literal notranslate"><span class="pre">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/</span></code>, in order to prevent the Monkey tester from performing unwanted tasks such as dropping other databases, create a limited user under phpMyAdmin and login to that user. The idea is to prevent monkey tests to damage your existing infrastructure.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In this case, we want to prevent monkey test from dropping our code_coverage database. So after logging in with your root user account,  under “Users” tab, click “Add user” and uncheck the undesired privileges.</p>
+</div>
+<ul class="simple">
 <li><p><strong>Unleash the Gremlins</strong>: Once inside phpMyAdmin, from the TamperMonkey icon, enable this script and you will see the monkeys start to interact with the application and nagivate to different pages within the application. If you don’t instantly see the clicks happening on the page, try refreshing the page to make sure the monkey testing script is injected in the page. In general, if something goes wrong, you can open the browser console and see the JavaScript errors logs and debug your monkey testing code.</p></li>
 <li><p><strong>Disable the monkey tester</strong>: This test is equivalent to fuzzing, as such it should be left running for extended hours. For the purposes of this tutorial, it suffices to observe how it works and you can close the current browser tab and disable the Monkey tester after a short period after time.</p></li>
 </ul>
@@ -511,16 +524,16 @@ Here, we have the option of file and function debloating. Remember that function
 <blockquote>
 <div><p>Rerunning same as before, this will either output:</p>
 <div class="line-block">
-<div class="line">Exploit failed!</div>
+<div class="line">- fail to parse the JSON because the field that its expecting is not there or</div>
+<div class="line">- Exploit failed!</div>
 <div class="line">Try to manually set exploit parameters like –table, –database and –token. Remember that servers with PHP version greater than 5.4.6 is not exploitable, because of warning about null byte in regexp</div>
 </div>
-<p>Or fail to parse the JSON because the field that its expecting is not there.</p>
 </div></blockquote>
 </div>
 </div>
 <div class="section" id="source-code-metrics-after-debloating">
 <h2>Source Code Metrics After Debloating<a class="headerlink" href="#source-code-metrics-after-debloating" title="Permalink to this headline">¶</a></h2>
-<p>Now it’s time to run phpmetrics again and see the reduction in lines of code and cyclomatic complexity: <code class="code docutils literal notranslate"><span class="pre">phpmetrics</span> <span class="pre">phpMyAdmin-4.4.15.6-all-languages/</span></code></p>
+<p>Now it’s time to run phpmetrics again from the “training web” container and see the reduction in lines of code and cyclomatic complexity: <code class="code docutils literal notranslate"><span class="pre">phpmetrics</span> <span class="pre">phpMyAdmin-4.4.15.6-all-languages/</span></code></p>
 <div class="toggle admonition">
 <p class="admonition-title">Solution</p>
 <blockquote>

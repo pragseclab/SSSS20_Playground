@@ -13,12 +13,15 @@ Installation
 ------------
 
 .. note::
-   Skip the installation section for SSSS'20 event as the container has already been setup for you.
+   Skip the installation section for SSSS'20 event as the environment has already been setup for you.
 
-1. Download the project files `debloating_phpMyAdmin.tar.gz <https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing>`_
-2. Decompress the tar file :code:`tar zxvf debloating_phpMyAdmin.tar.gz`
-3. Run :code:`docker-compose up -d` in the root directory
-4. You can view the logs using :code:`docker-compose logs -f -t`
+.. admonition:: Installation details
+   :class: toggle
+
+      1. Download the project files `debloating_phpMyAdmin.tar.gz <https://drive.google.com/file/d/11Dh2_uWR5XqSUCCsBIvfWZVR6sHraFVv/view?usp=sharing>`_
+      2. Decompress the tar file :code:`tar zxvf debloating_phpMyAdmin.tar.gz`
+      3. Run :code:`docker-compose up -d` in the root directory
+      4. You can view the logs using :code:`docker-compose logs -f -t`
 
 
 Docker Containers
@@ -117,7 +120,7 @@ Steps to follow:
       **test/libraries/core/PMA_warnMissingExtension_test.php** is included in the patch but since it is a unit test, it is only accessible locally and does not directly contribute to the vulnerability, also it is not exploitable.
 
 | **[Match the vulnerable lines]**
-| The process to prepare PHP class destructors for debloating rewrites the source code and at times changes the line number compared to the one in Git diff. To make sure the line number mapping is correct, we should not rely on the line numbers of the Git commit. Instead, we confirm the line numbers on our own local copy of the application. For this, using your favorite text editor look into the :code:`web/phpMyAdmin-4.4.15.6-all-languages/` directory mounted under your users home directory on the virtual machine and find the lines that were removed or changed from the vulnerable version of the application (red lines). If you are using gedit over VNC, you can enable line numbers by clicking on the cog icon, under preferences, click display line numbers.
+| The process to prepare PHP class destructors for debloating rewrites the source code and at times changes the line number compared to the one in Git diff. To make sure the line number mapping is correct, we should not rely on the line numbers of the Git commit. Instead, we confirm the line numbers on our own local copy of the application. For this, using your favorite text editor look into the :code:`/home/ubuntu/debloating_phpMyAdmin/web/phpMyAdmin-4.4.15.6-all-languages/` directory mounted under your users home directory on the virtual machine and find the lines that were removed or changed from the vulnerable version of the application (red lines). If you are using gedit over VNC, you can enable line numbers by clicking on the cog icon, under preferences, click display line numbers.
 
 .. admonition:: Solution
    :class: toggle
@@ -128,7 +131,9 @@ Steps to follow:
       - libraries/tbl_columns_definition_form.lib.php: 488
 
 | **[Identify the function lines]**
-| Whenever the vulnerability resides inside a PHP function, we also include that information in our database. For that, write down the line of the first executable line within the function that includes the vulnerable code. In the following example, the vulnerability is on line **448** and the first executable inside the function is on line **447**. So in this case we note down **PMA_getNumberOfFieldsFromRequest():447**. Make sure to write down both the function name as well as the line numbers, we will need both of them to populate our database later.
+| Whenever the vulnerability resides inside a PHP function, we also include that information in our database. For that, write down the line number of the first executable line within the function that includes the vulnerable code (i.e., skip function's opening curly brace and comment lines). 
+
+In the following example, the vulnerability is on line **448** and the first executable inside the function is on line **447**. So in this case we note down **PMA_getNumberOfFieldsFromRequest():447**. Make sure to write down both the function name as well as the line numbers, we will need both of them to populate our database later. In our debloating pipeline, we use this line number to mark functions as covered or not, the function name is only used as a label in the admin panel (i.e., you can include or ignore function parameters when adding function name to the database).
 
 .. image:: _static/sourcecode.png
    :align: center
@@ -142,7 +147,7 @@ Steps to follow:
       - libraries/tbl_columns_definition_form.lib.php:**PMA_getHtmlForTransformation($columnNumber, $ci, $ci_offset, $available_mime, $columnMeta, $mime_map, $type_prefix ):483**
 
 | **[Add CVE information to database]**
-| With this information, go back to the admin panel, add the CVE information under the :code:`CVE` tab. You can enter the CVE id and leave Name and Description fields empty. under the :code:`Software Vulnerabilities` tab, mark phpMyAdmin 4.4.15 as the software version that is affected by this CVE.  Then, under the :code:`Vulnerable Files Mapping` tab, add the path to each file from the root of the application. In a similar fashion, add the :code:`Vulnerable Lines Mapping` and :code:`Vulnerable Functions Mapping` for the same CVE.
+| With this information, go back to the admin panel, add the CVE information under the :code:`CVE` tab. You can enter the CVE id and leave Name and Description fields empty. Under the :code:`Software Vulnerabilities` tab, mark phpMyAdmin 4.4.15 as the software version that is affected by this CVE.  Then, under the :code:`Vulnerable Files Mapping` tab, add the path to each file from the root of the application. In a similar fashion, add the :code:`Vulnerable Lines Mapping` and :code:`Vulnerable Functions Mapping` for the same CVE.
 
 Finding And Running The Exploit
 -------------------------------
@@ -169,7 +174,8 @@ In the public exploit for this vulnerability, but default, the payload is set to
 Using The Application & Recording The Code Coverage
 ---------------------------------------------------
 
-In order to debloat the application, first we have to record a representative code coverage. This way, we can identify the parts of the application that are required by the users. For instance, if users exercise the create/drop database functionality, we want to keep it and remove the export functionality if it has never been used.
+In order to debloat the application, first we have to record a representative code coverage. This way, we can identify the parts of the application that are required by the users. For instance, if users exercise the create/drop database functionality, we want to keep it and remove the export functionality if it has never been used. 
+In this section, we interact with the "training web" container hosted over :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages`.
 
 We have various ways to model the user behavior, in this tutorial we focus on **scripting common tasks as Selenium scripts** and the **monkey testing**. 
 The template for these tests are under :code:`Tests` directory.
@@ -215,8 +221,13 @@ Now you can run the selenium script and watch Chrome browser open and exercise t
    | There are certain points to consider when designing monkey tests. First, to prevent the monkey tester from logging out of the application, and to increase its coverage inside the application we use JavaScript within our monkey tests to prepare the environment and that includes removing the log out button. Second, we remove all hyperlinks to other domains outside of our test application, to prevent the monkey tester from navigating to other domains. Finally, to address the issue where the monkey tester navigates to a static page (e.g., print preview) where there is no way to get back, we set a timer and restart the monkey tester from the homepage if it gets stuck on the same page for extended periods of time. These details are already builtin to our script.
 
 
-- **Install TamperMonkey**: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from :code:`/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJSpma_440_GremlinsJS.user.js/` as a new script. There are two place holders that you need to update with the proper id from the database as before. Replace the "UPDATE HERE" strings with the Software and Software Version Id similar to Selenium scripts.
-- **Login to phpMyAdmin**: Disable this new script and navigate to :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/`, in order to prevent the Monkey tester from performing unwanted tasks such as dropping other databases, create a limited user under phpMyAdmin and login to that user.
+- **Install TamperMonkey**: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from :code:`/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJS/pma_440_GremlinsJS.user.js` as a new script. There are two place holders that you need to update with the proper id from the database as before. Replace the "UPDATE HERE" strings with the Software and Software Version Id similar to Selenium scripts.
+- **Login to phpMyAdmin**: Disable this new script and navigate to :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/`, in order to prevent the Monkey tester from performing unwanted tasks such as dropping other databases, create a limited user under phpMyAdmin and login to that user. The idea is to prevent monkey tests to damage your existing infrastructure.
+
+.. note:: 
+
+   In this case, we want to prevent monkey test from dropping our code_coverage database. So after logging in with your root user account,  under "Users" tab, click "Add user" and uncheck the undesired privileges.
+
 - **Unleash the Gremlins**: Once inside phpMyAdmin, from the TamperMonkey icon, enable this script and you will see the monkeys start to interact with the application and nagivate to different pages within the application. If you don't instantly see the clicks happening on the page, try refreshing the page to make sure the monkey testing script is injected in the page. In general, if something goes wrong, you can open the browser console and see the JavaScript errors logs and debug your monkey testing code.
 - **Disable the monkey tester**: This test is equivalent to fuzzing, as such it should be left running for extended hours. For the purposes of this tutorial, it suffices to observe how it works and you can close the current browser tab and disable the Monkey tester after a short period after time.
 
@@ -307,15 +318,14 @@ This exploit uses  a vulnerability in table find and replace functionality withi
 
       Rerunning same as before, this will either output:
       
-      | Exploit failed!
+      | - fail to parse the JSON because the field that its expecting is not there or
+      | - Exploit failed!
       | Try to manually set exploit parameters like --table, --database and --token. Remember that servers with PHP version greater than 5.4.6 is not exploitable, because of warning about null byte in regexp
-
-      Or fail to parse the JSON because the field that its expecting is not there.
 
 Source Code Metrics After Debloating
 ------------------------------------
 
-Now it’s time to run phpmetrics again and see the reduction in lines of code and cyclomatic complexity: :code:`phpmetrics phpMyAdmin-4.4.15.6-all-languages/`
+Now it’s time to run phpmetrics again from the "training web" container and see the reduction in lines of code and cyclomatic complexity: :code:`phpmetrics phpMyAdmin-4.4.15.6-all-languages/`
 
 .. admonition:: Solution
    :class: toggle
