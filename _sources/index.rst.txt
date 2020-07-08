@@ -41,6 +41,8 @@ Docker Containers
 
 Accessing The Containers
 ------------------------
+You can run :code:`docker ps` to see if the containers are started already. If you don't see the containers, navigate to :code:`/home/ubuntu/debloating_phpMyAdmin/` and run :code:`docker-compose up -d`. This will start the containers. You can verify this using :code:`docker ps` again.
+
 If you need shell access to any of the containers, you need to run the /bin/bash process inside the containers. We have provided shell scripts to aid with this process. These scripts will find the container id and execute the /bin/bash process for you. The scripts to access the containers are in the root directory of the applicaton which is currently at :code:`/home/ubuntu/debloating_phpMyAdmin/`. For **web** containers, the web applications are under :code:`/var/www/html/` and the database used for debloating panel is under **db** container named :code:`code_coverage`.
 
 - Public Web: :code:`./ssh_public_web.sh`
