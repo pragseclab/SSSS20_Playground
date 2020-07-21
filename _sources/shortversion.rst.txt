@@ -12,13 +12,13 @@ Welcome to the **Less is more** playground for SSSS'20. In this tutorial, you wi
 .. note::
    Throughout this tutorial, **"Action Items"** marked with :fa:`arrow-right` icon, are concrete tasks that you need to follow. 
    
-   There is also **"Information Items"** marked with :fa:`eye` icon. 
+   There is also **"Information Items"** marked with :fa:`info-circle` icon. 
    These items provide the context about the task at hand or the idea behind it. 
    While it is highly suggested to read through them, there are no concrete steps accompanied by them.
 
 .. contents::
 
-:fa:`eye` Installation
+:fa:`info-circle` Installation
 ----------------------
 
 .. note::
@@ -33,7 +33,7 @@ Welcome to the **Less is more** playground for SSSS'20. In this tutorial, you wi
       4. You can view the logs using :code:`docker-compose logs -f -t`
 
 
-:fa:`eye` Docker Containers
+:fa:`info-circle` Docker Containers
 ---------------------------
 
 .. image:: _static/SSSS20.png
@@ -85,7 +85,7 @@ Steps to follow:
 | Under the “Debloating” tab (http://localhost:8086/admin/software_file/description), click on the “Rewrite Destructors” button. This will make sure that we record the full code coverage for our target application. This step can take around a minute and then it will show a text log of the destructors that have been rewritten and prepared for debloating.
 
 .. note::
-   :fa:`eye` Preparing the destructors requires admin panels access to modify the source code of our target web application. The same "web" directory which includes web application files on the host machine is mounted to "/var/www/html" directory under web and admin docker containers. If you see a permission error while rewriting the destructors, use :code:`./ssh_admin.sh` script to get into the admin container, navigate to the target web application directory (:code:`cd /var/www/html/phpMyAdmin-4.4.15.6-all-languages`) and change the owner of the files to the web server user (:code:`chown -R www-data:www-data .`).
+   :fa:`info-circle` Preparing the destructors requires admin panels access to modify the source code of our target web application. The same "web" directory which includes web application files on the host machine is mounted to "/var/www/html" directory under web and admin docker containers. If you see a permission error while rewriting the destructors, use :code:`./ssh_admin.sh` script to get into the admin container, navigate to the target web application directory (:code:`cd /var/www/html/phpMyAdmin-4.4.15.6-all-languages`) and change the owner of the files to the web server user (:code:`chown -R www-data:www-data .`).
 
 :fa:`arrow-right` 3. Adding The CVE Information To The Vulnerability Database `[Video 2:39] <https://youtu.be/W4RMhgaSsc8?t=158>`_
 -----------------------------------------------------------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ Steps to follow:
 
    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-5734
 
-| :fa:`eye` **II. Understand the vulnerability**
+| :fa:`info-circle` **II. Understand the vulnerability**
 | Take your time to read about this vulnerability and get a general understanding of it. This is required later on when we mark the lines within the source code that are related to this vulnerability.
 
 .. admonition:: Solution
@@ -175,7 +175,7 @@ To demonstrate the power of debloating in removing actual vulnerabilities, we fo
 
 :fa:`arrow-right` Once you download the exploit code, run it against the public interface of your web application which is located at http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages. 
 
-:fa:`eye` This exploit takes advantage of a vulnerablity in :code:`preg_replace` function within PHP. Normally, this function takes a regular expression, applies it to a text and replaces every occurance with another text. By supplying the :code:`/e` modifier, PHP will interpret the output of this function as PHP code and execute it, essentially turning it into an eval function call. 
+:fa:`info-circle` This exploit takes advantage of a vulnerablity in :code:`preg_replace` function within PHP. Normally, this function takes a regular expression, applies it to a text and replaces every occurance with another text. By supplying the :code:`/e` modifier, PHP will interpret the output of this function as PHP code and execute it, essentially turning it into an eval function call. 
 By appending /e to our regex and using a null string terminator, we can run arbitrary code on target system and achieve RCE. 
 In the public exploit for this vulnerability, but default, the payload is set to :code:`system('uname -a');` but it can be changed to any arbitrary code that will be executed under the PHP/Apache user permissions.
 
@@ -265,7 +265,7 @@ If you think that you need to go back and retrain the application, first, revert
 Now that we have restored the original non-debloated application, you can go back to the training interface (http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/) and rerun our tests to complete the training phase. Repeat the debloating and continue to this step until you are satisfied with the preserved functionality within the debloating application.
 
 .. note::
-   | :fa:`eye` **Starting fresh**
+   | :fa:`info-circle` **Starting fresh**
    | If for whatever reason something goes wrong that is beyond a simple fix like replacing the web appliction files, you can follow these instructions to rebuild the environment from scratch and go back to the state at the beginning of this tutorial.
 
    - **Turn off the docker containers:** Navigate to :code:`~/debloating_phpMyAdmin/`, type :code:`docker-compose down`.

@@ -100,8 +100,8 @@
               <!-- Local TOC -->
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">SSSS’20 Playground (Full version)</a><ul>
-<li><a class="reference internal" href="#installation"><em class="fa fa-eye"></em> Installation</a></li>
-<li><a class="reference internal" href="#docker-containers"><em class="fa fa-eye"></em> Docker Containers</a></li>
+<li><a class="reference internal" href="#installation"><em class="fa fa-info-circle"></em> Installation</a></li>
+<li><a class="reference internal" href="#docker-containers"><em class="fa fa-info-circle"></em> Docker Containers</a></li>
 <li><a class="reference internal" href="#accessing-the-containers-video-0-26"><em class="fa fa-arrow-right"></em> 1. Accessing The Containers [Video 0:26]</a></li>
 <li><a class="reference internal" href="#adding-new-applications-to-the-pipeline-video-0-53"><em class="fa fa-arrow-right"></em> 2. Adding New Applications To The Pipeline [Video 0:53]</a></li>
 <li><a class="reference internal" href="#adding-the-cve-information-to-the-vulnerability-database-video-2-39"><em class="fa fa-arrow-right"></em> 3. Adding The CVE Information To The Vulnerability Database [Video 2:39]</a></li>
@@ -191,7 +191,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Throughout this tutorial, <strong>“Action Items”</strong> marked with <em class="fa fa-arrow-right"></em> icon, are concrete tasks that you need to follow.</p>
-<p>There is also <strong>“Information Items”</strong> marked with <em class="fa fa-eye"></em> icon.
+<p>There is also <strong>“Information Items”</strong> marked with <em class="fa fa-info-circle"></em> icon.
 These items provide the context about the task at hand or the idea behind it.
 While it is highly suggested to read through them, there are no concrete steps accompanied by them.</p>
 </div>
@@ -200,8 +200,8 @@ While it is highly suggested to read through them, there are no concrete steps a
 <ul class="simple">
 <li><p><a class="reference internal" href="#ssss-20-playground-full-version" id="id1">SSSS’20 Playground (Full version)</a></p>
 <ul>
-<li><p><a class="reference internal" href="#installation" id="id2"><em class="fa fa-eye"></em> Installation</a></p></li>
-<li><p><a class="reference internal" href="#docker-containers" id="id3"><em class="fa fa-eye"></em> Docker Containers</a></p></li>
+<li><p><a class="reference internal" href="#installation" id="id2"><em class="fa fa-info-circle"></em> Installation</a></p></li>
+<li><p><a class="reference internal" href="#docker-containers" id="id3"><em class="fa fa-info-circle"></em> Docker Containers</a></p></li>
 <li><p><a class="reference internal" href="#accessing-the-containers-video-0-26" id="id4"><em class="fa fa-arrow-right"></em> 1. Accessing The Containers [Video 0:26]</a></p></li>
 <li><p><a class="reference internal" href="#adding-new-applications-to-the-pipeline-video-0-53" id="id5"><em class="fa fa-arrow-right"></em> 2. Adding New Applications To The Pipeline [Video 0:53]</a></p></li>
 <li><p><a class="reference internal" href="#adding-the-cve-information-to-the-vulnerability-database-video-2-39" id="id6"><em class="fa fa-arrow-right"></em> 3. Adding The CVE Information To The Vulnerability Database [Video 2:39]</a></p></li>
@@ -217,7 +217,7 @@ While it is highly suggested to read through them, there are no concrete steps a
 </ul>
 </div>
 <div class="section" id="installation">
-<h2><a class="toc-backref" href="#id2"><em class="fa fa-eye"></em> Installation</a><a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2"><em class="fa fa-info-circle"></em> Installation</a><a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Skip the installation section for SSSS’20 event as the environment has already been setup for you.</p>
@@ -235,7 +235,7 @@ While it is highly suggested to read through them, there are no concrete steps a
 </div>
 </div>
 <div class="section" id="docker-containers">
-<h2><a class="toc-backref" href="#id3"><em class="fa fa-eye"></em> Docker Containers</a><a class="headerlink" href="#docker-containers" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3"><em class="fa fa-info-circle"></em> Docker Containers</a><a class="headerlink" href="#docker-containers" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/SSSS20.png" class="align-center" src="_images/SSSS20.png" />
 <ul class="simple">
 <li><p><strong>Public Web:</strong> This docker container is the public side of your application. It is accessible on <a class="reference external" href="http://localhost:8084">http://localhost:8084</a>. Public internet users will interact with the applications over this port. No training and code coverage recording is performed on this container. You will mount your attacks on this container.</p></li>
@@ -288,7 +288,7 @@ While it is highly suggested to read through them, there are no concrete steps a
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><em class="fa fa-eye"></em> Preparing the destructors requires admin panels access to modify the source code of our target web application. The same “web” directory which includes web application files on the host machine is mounted to “/var/www/html” directory under web and admin docker containers. If you see a permission error while rewriting the destructors, use <code class="code docutils literal notranslate"><span class="pre">./ssh_admin.sh</span></code> script to get into the admin container, navigate to the target web application directory (<code class="code docutils literal notranslate"><span class="pre">cd</span> <span class="pre">/var/www/html/phpMyAdmin-4.4.15.6-all-languages</span></code>) and change the owner of the files to the web server user (<code class="code docutils literal notranslate"><span class="pre">chown</span> <span class="pre">-R</span> <span class="pre">www-data:www-data</span> <span class="pre">.</span></code>).</p>
+<p><em class="fa fa-info-circle"></em> Preparing the destructors requires admin panels access to modify the source code of our target web application. The same “web” directory which includes web application files on the host machine is mounted to “/var/www/html” directory under web and admin docker containers. If you see a permission error while rewriting the destructors, use <code class="code docutils literal notranslate"><span class="pre">./ssh_admin.sh</span></code> script to get into the admin container, navigate to the target web application directory (<code class="code docutils literal notranslate"><span class="pre">cd</span> <span class="pre">/var/www/html/phpMyAdmin-4.4.15.6-all-languages</span></code>) and change the owner of the files to the web server user (<code class="code docutils literal notranslate"><span class="pre">chown</span> <span class="pre">-R</span> <span class="pre">www-data:www-data</span> <span class="pre">.</span></code>).</p>
 </div>
 </div>
 <div class="section" id="adding-the-cve-information-to-the-vulnerability-database-video-2-39">
@@ -304,7 +304,7 @@ While it is highly suggested to read through them, there are no concrete steps a
 <p><a class="reference external" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-5734">https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-5734</a></p>
 </div>
 <div class="line-block">
-<div class="line"><em class="fa fa-eye"></em> <strong>II. Understand the vulnerability</strong></div>
+<div class="line"><em class="fa fa-info-circle"></em> <strong>II. Understand the vulnerability</strong></div>
 <div class="line">Take your time to read about this vulnerability and get a general understanding of it. This is required later on when we mark the lines within the source code that are related to this vulnerability.</div>
 </div>
 <div class="toggle admonition">
@@ -391,7 +391,7 @@ While it is highly suggested to read through them, there are no concrete steps a
 </div></blockquote>
 </div>
 <p><em class="fa fa-arrow-right"></em> Once you download the exploit code, run it against the public interface of your web application which is located at <a class="reference external" href="http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages">http://localhost:8084/phpMyAdmin-4.4.15.6-all-languages</a>.</p>
-<p><em class="fa fa-eye"></em> This exploit takes advantage of a vulnerablity in <code class="code docutils literal notranslate"><span class="pre">preg_replace</span></code> function within PHP. Normally, this function takes a regular expression, applies it to a text and replaces every occurance with another text. By supplying the <code class="code docutils literal notranslate"><span class="pre">/e</span></code> modifier, PHP will interpret the output of this function as PHP code and execute it, essentially turning it into an eval function call.
+<p><em class="fa fa-info-circle"></em> This exploit takes advantage of a vulnerablity in <code class="code docutils literal notranslate"><span class="pre">preg_replace</span></code> function within PHP. Normally, this function takes a regular expression, applies it to a text and replaces every occurance with another text. By supplying the <code class="code docutils literal notranslate"><span class="pre">/e</span></code> modifier, PHP will interpret the output of this function as PHP code and execute it, essentially turning it into an eval function call.
 By appending /e to our regex and using a null string terminator, we can run arbitrary code on target system and achieve RCE.
 In the public exploit for this vulnerability, but default, the payload is set to <code class="code docutils literal notranslate"><span class="pre">system('uname</span> <span class="pre">-a');</span></code> but it can be changed to any arbitrary code that will be executed under the PHP/Apache user permissions.</p>
 <div class="toggle admonition">
@@ -432,7 +432,7 @@ The template for these tests are under <code class="code docutils literal notran
 <li><p><code class="code docutils literal notranslate"><span class="pre">#</span> <span class="pre">UPDATE</span> <span class="pre">HERE</span> <span class="pre">(5/6)</span></code>: Similar to the step above, fill the proper XPATH for password field.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">#</span> <span class="pre">UPDATE</span> <span class="pre">HERE</span> <span class="pre">(6/6)</span></code>: Fill the proper XPATH for Go button that is then used by <code class="code docutils literal notranslate"><span class="pre">click_element</span></code> to click on this button and login. At the end of this step, the Selenium script should be able to login to the application.</p></li>
 </ul>
-<p><em class="fa fa-eye"></em> On a separate note, by setting specific environment variables, we can label our manual requests that do not carry specific cookies used by the debloating pipeline. For that, update the <code class="code docutils literal notranslate"><span class="pre">.htaccess</span></code> file within the root of phpMyAdmin with the <strong>Software Id</strong> and <strong>Software Version Id</strong> that you used in the Selenium script.</p>
+<p><em class="fa fa-info-circle"></em> On a separate note, by setting specific environment variables, we can label our manual requests that do not carry specific cookies used by the debloating pipeline. For that, update the <code class="code docutils literal notranslate"><span class="pre">.htaccess</span></code> file within the root of phpMyAdmin with the <strong>Software Id</strong> and <strong>Software Version Id</strong> that you used in the Selenium script.</p>
 <p><em class="fa fa-arrow-right"></em> Now you can run the selenium script and watch Chrome browser open and exercise the application features. The console will show logs about the current step and debugging information. <code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">pma_440_tutorials.py</span></code>.</p>
 <img alt="_images/devtools.png" class="align-center" src="_images/devtools.png" />
 <div class="toggle admonition">
@@ -452,7 +452,7 @@ The template for these tests are under <code class="code docutils literal notran
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line"><em class="fa fa-eye"></em> <strong>Important details when designing a monkey testing script:</strong></div>
+<div class="line"><em class="fa fa-info-circle"></em> <strong>Important details when designing a monkey testing script:</strong></div>
 <div class="line">There are certain points to consider when designing monkey tests. First, to prevent the monkey tester from logging out of the application, and to increase its coverage inside the application we use JavaScript within our monkey tests to prepare the environment and that includes removing the log out button. Second, we remove all hyperlinks to other domains outside of our test application, to prevent the monkey tester from navigating to other domains. Finally, to address the issue where the monkey tester navigates to a static page (e.g., print preview) where there is no way to get back, we set a timer and restart the monkey tester from the homepage if it gets stuck on the same page for extended periods of time. These details are already builtin to our script.</div>
 </div>
 </div>
@@ -540,7 +540,7 @@ Here, we have the option of file and function debloating. Remember that function
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line"><em class="fa fa-eye"></em> <strong>Starting fresh</strong></div>
+<div class="line"><em class="fa fa-info-circle"></em> <strong>Starting fresh</strong></div>
 <div class="line">If for whatever reason something goes wrong that is beyond a simple fix like replacing the web appliction files, you can follow these instructions to rebuild the environment from scratch and go back to the state at the beginning of this tutorial.</div>
 </div>
 <ul class="simple">
