@@ -200,6 +200,57 @@ In this section, we interact with the "training web" container hosted over :code
 We have various ways to model the user behavior, in this tutorial we focus on **scripting common tasks as Selenium scripts** and the **monkey testing**. 
 The template for these tests are under :code:`Tests` directory.
 
+| :fa:`arrow-right` **[Selenium scripts]**
+| Using your favorite text editor, open :code:`/home/ubuntu/debloating_phpMyAdmin/Tests/Selenium-Tests/phpMyAdmin/pma_440_tutorials.py`. The script comes with a set of helper functions to set proper cookies for the debloating backend, find certain elements on the page and click on buttons and fill textboxes. The main flow of tests for our current playground is as follows:
+
+- :code:`pma.login()`: will login to the phpMyAdmin application.
+- :code:`pma.create_database()`: will create a dummy database and a table.
+- :code:`pma.input_data_to_table()`: will use the web UI to insert data into the new table.
+- :code:`pma.run_query()`: will run a text query against our database.
+- :code:`pma.browse_table()`: will use the UI to list the rows in the table.
+- :code:`pma.drop_database()`: will drop the newly created database.
+
+Throughout this code, there are specific placeholders that need to be filled by you as part of this tutorial. You can find them by searching for :code:`# UPDATE HERE`. There are 6 places that need to be filled.
+
+- :code:`# UPDATE HERE (1/6)`: Here, your task is to fill in the path to your target web application. In this case :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/`.
+- :code:`# UPDATE HERE (2/6)`: Should be set to the **Software Id** that is returned by the admin panel after you create a new application.
+- :code:`# UPDATE HERE (3/6)`: Is the **Software Version Id**, again extracted from the admin panel.
+- :code:`# UPDATE HERE (4/6)`: **fill_textbox** is one of the helper functions that accepts an XPATH selector as its first input, and the string to be filled within that textbox as the second input. You can take a look at this cheat sheet for XPath selectors (https://devhints.io/xpath). For this instance, we want to select the login username textbox based on its id. Using browser developer tools inspect the username textbox field and extract the id and write the proper XPATH.
+- :code:`# UPDATE HERE (5/6)`: Similar to the step above, fill the proper XPATH for password field.
+- :code:`# UPDATE HERE (6/6)`: Fill the proper XPATH for Go button that is then used by :code:`click_element` to click on this button and login. At the end of this step, the Selenium script should be able to login to the application.
+
+:fa:`eye` On a separate note, by setting specific environment variables, we can label our manual requests that do not carry specific cookies used by the debloating pipeline. For that, update the :code:`.htaccess` file within the root of phpMyAdmin with the **Software Id** and **Software Version Id** that you used in the Selenium script.
+
+:fa:`arrow-right` Now you can run the selenium script and watch Chrome browser open and exercise the application features. The console will show logs about the current step and debugging information. :code:`python3 pma_440_tutorials.py`.
+
+.. image:: _static/devtools.png
+   :align: center
+
+.. admonition:: Solution
+   :class: toggle
+
+      - Username selector: :code:`'//*[@id="input_username"]'`
+      - Password selector: :code:`'//*[@id="input_password"]'`
+      - Go button selector: :code:`'//*[@id="input_go"]'`
+
+| :fa:`arrow-right` **[Monkey testing]** `[Video 15:31] <https://youtu.be/W4RMhgaSsc8?t=931>`_
+| Is a form of automated random testing, similar to fuzzing. By sending random keystrokes and events to the page, we navigate to different parts of the application and invoke different features. The main idea is to exercise easy to reach features. 
+
+.. note::
+   | :fa:`eye` **Important details when designing a monkey testing script:** 
+   | There are certain points to consider when designing monkey tests. First, to prevent the monkey tester from logging out of the application, and to increase its coverage inside the application we use JavaScript within our monkey tests to prepare the environment and that includes removing the log out button. Second, we remove all hyperlinks to other domains outside of our test application, to prevent the monkey tester from navigating to other domains. Finally, to address the issue where the monkey tester navigates to a static page (e.g., print preview) where there is no way to get back, we set a timer and restart the monkey tester from the homepage if it gets stuck on the same page for extended periods of time. These details are already builtin to our script.
+
+
+- :fa:`arrow-right` **Install TamperMonkey**: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from :code:`/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJS/pma_440_GremlinsJS.user.js` as a new script. There are two place holders that you need to update with the proper id from the database as before. Replace the "UPDATE HERE" strings with the Software and Software Version Id similar to Selenium scripts.
+- :fa:`arrow-right` **Login to phpMyAdmin**: Disable this new script and navigate to :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/`, in order to prevent the Monkey tester from performing unwanted tasks such as dropping other databases, we login with a user with limited permission under phpMyAdmin. The idea is to prevent monkey tests to damage your existing infrastructure. 
+
+.. note::
+   For this test, login with username: **limited** password: **limited**
+
+- :fa:`arrow-right` **Unleash the Gremlins**: Once inside phpMyAdmin, from the TamperMonkey icon, enable this script and you will see the monkeys start to interact with the application and nagivate to different pages within the application. If you don't instantly see the clicks happening on the page, try refreshing the page to make sure the monkey testing script is injected in the page. In general, if something goes wrong, you can open the browser console and see the JavaScript errors logs and debug your monkey testing code.
+- :fa:`arrow-right` **Disable the monkey tester**: This test is equivalent to fuzzing, as such it should be left running for extended hours. For the purposes of this tutorial, it suffices to observe how it works and you can close the current browser tab and disable the Monkey tester after a short period after time.
+
+
 | :fa:`arrow-right` **[Check the coverage in the admin panel]** `[Video 17:23] <https://youtu.be/W4RMhgaSsc8?t=1043>`_
 | To make sure we have correctly recorded the code coverage as you are working with the application, navigate to http://localhost:8086/admin/report. By clicking on the tests for our target web application, you can view specific files (e.g., index.php) being used and you can also view the coverage of specific lines within these files.
 

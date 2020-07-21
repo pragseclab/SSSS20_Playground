@@ -3,16 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-=================================
-SSSS'20 Playground (Full version)
-=================================
+==================================
+SSSS'20 Playground (Short version)
+==================================
 
-Welcome to the **Less is more** playground for SSSS'20. In this tutorial, you will get hands on experience with using our pipeline to debloat a phpMyAdmin web application. You will become familiar with the debloating administration panel, setup your own tests and see how a real exploit is stopped after debloating.
-
-| **Full playground vs short version**
-| For majority of the attendees who are interested in the full experience of debloating web applications, we suggest that you follow this tutorial. For attendees who are more interested in how web application debloating can reduce the attack surface and want to focus only on the practical aspects of the tutorial, they can follow this link :doc:`shortversion`.
-
-.. toctree::
+Welcome to the **Less is more** playground for SSSS'20. In this tutorial, you will get hands on experience with using our pipeline to debloat a phpMyAdmin web application. You will become familiar with the debloating administration panel, and see how a real exploit is stopped after debloating. You are following the **short version** of this playground.
 
 .. note::
    Throughout this tutorial, **"Action Items"** marked with :fa:`arrow-right` icon, are concrete tasks that you need to follow. 

@@ -184,7 +184,7 @@
 <p>Welcome to the <strong>Less is more</strong> playground for SSSS’20. In this tutorial, you will get hands on experience with using our pipeline to debloat a phpMyAdmin web application. You will become familiar with the debloating administration panel, setup your own tests and see how a real exploit is stopped after debloating.</p>
 <div class="line-block">
 <div class="line"><strong>Full playground vs short version</strong></div>
-<div class="line">For majority of the attendees who are interested in the full experience of debloating web applications, we suggest that you follow this tutorial. For attendees who are more interested in how web application debloating can reduce the attack surface and want to focus only on the practical aspects of the tutorial, they can follow this link <a class="reference internal" href="shortversion.html"><span class="doc">SSSS’20 Playground (Full version)</span></a>.</div>
+<div class="line">For majority of the attendees who are interested in the full experience of debloating web applications, we suggest that you follow this tutorial. For attendees who are more interested in how web application debloating can reduce the attack surface and want to focus only on the practical aspects of the tutorial, they can follow this link <a class="reference internal" href="shortversion.html"><span class="doc">SSSS’20 Playground (Short version)</span></a>.</div>
 </div>
 <div class="toctree-wrapper compound">
 </div>
@@ -411,6 +411,63 @@ In the public exploit for this vulnerability, but default, the payload is set to
 In this section, we interact with the “training web” container hosted over <code class="code docutils literal notranslate"><span class="pre">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages</span></code>.</p>
 <p>We have various ways to model the user behavior, in this tutorial we focus on <strong>scripting common tasks as Selenium scripts</strong> and the <strong>monkey testing</strong>.
 The template for these tests are under <code class="code docutils literal notranslate"><span class="pre">Tests</span></code> directory.</p>
+<div class="line-block">
+<div class="line"><em class="fa fa-arrow-right"></em> <strong>[Selenium scripts]</strong></div>
+<div class="line">Using your favorite text editor, open <code class="code docutils literal notranslate"><span class="pre">/home/ubuntu/debloating_phpMyAdmin/Tests/Selenium-Tests/phpMyAdmin/pma_440_tutorials.py</span></code>. The script comes with a set of helper functions to set proper cookies for the debloating backend, find certain elements on the page and click on buttons and fill textboxes. The main flow of tests for our current playground is as follows:</div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">pma.login()</span></code>: will login to the phpMyAdmin application.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pma.create_database()</span></code>: will create a dummy database and a table.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pma.input_data_to_table()</span></code>: will use the web UI to insert data into the new table.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pma.run_query()</span></code>: will run a text query against our database.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pma.browse_table()</span></code>: will use the UI to list the rows in the table.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pma.drop_database()</span></code>: will drop the newly created database.</p></li>
+</ul>
+<p>Throughout this code, there are specific placeholders that need to be filled by you as part of this tutorial. You can find them by searching for <code class="code docutils literal notranslate"><span class="pre">#</span> <span class="pre">UPDATE</span> <span class="pre">HERE</span></code>. There are 6 places that need to be filled.</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">#</span> <span class="pre">UPDATE</span> <span class="pre">HERE</span> <span class="pre">(1/6)</span></code>: Here, your task is to fill in the path to your target web application. In this case <code class="code docutils literal notranslate"><span class="pre">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/</span></code>.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">#</span> <span class="pre">UPDATE</span> <span class="pre">HERE</span> <span class="pre">(2/6)</span></code>: Should be set to the <strong>Software Id</strong> that is returned by the admin panel after you create a new application.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">#</span> <span class="pre">UPDATE</span> <span class="pre">HERE</span> <span class="pre">(3/6)</span></code>: Is the <strong>Software Version Id</strong>, again extracted from the admin panel.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">#</span> <span class="pre">UPDATE</span> <span class="pre">HERE</span> <span class="pre">(4/6)</span></code>: <strong>fill_textbox</strong> is one of the helper functions that accepts an XPATH selector as its first input, and the string to be filled within that textbox as the second input. You can take a look at this cheat sheet for XPath selectors (<a class="reference external" href="https://devhints.io/xpath">https://devhints.io/xpath</a>). For this instance, we want to select the login username textbox based on its id. Using browser developer tools inspect the username textbox field and extract the id and write the proper XPATH.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">#</span> <span class="pre">UPDATE</span> <span class="pre">HERE</span> <span class="pre">(5/6)</span></code>: Similar to the step above, fill the proper XPATH for password field.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">#</span> <span class="pre">UPDATE</span> <span class="pre">HERE</span> <span class="pre">(6/6)</span></code>: Fill the proper XPATH for Go button that is then used by <code class="code docutils literal notranslate"><span class="pre">click_element</span></code> to click on this button and login. At the end of this step, the Selenium script should be able to login to the application.</p></li>
+</ul>
+<p><em class="fa fa-eye"></em> On a separate note, by setting specific environment variables, we can label our manual requests that do not carry specific cookies used by the debloating pipeline. For that, update the <code class="code docutils literal notranslate"><span class="pre">.htaccess</span></code> file within the root of phpMyAdmin with the <strong>Software Id</strong> and <strong>Software Version Id</strong> that you used in the Selenium script.</p>
+<p><em class="fa fa-arrow-right"></em> Now you can run the selenium script and watch Chrome browser open and exercise the application features. The console will show logs about the current step and debugging information. <code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">pma_440_tutorials.py</span></code>.</p>
+<img alt="_images/devtools.png" class="align-center" src="_images/devtools.png" />
+<div class="toggle admonition">
+<p class="admonition-title">Solution</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Username selector: <code class="code docutils literal notranslate"><span class="pre">'//*[&#64;id=&quot;input_username&quot;]'</span></code></p></li>
+<li><p>Password selector: <code class="code docutils literal notranslate"><span class="pre">'//*[&#64;id=&quot;input_password&quot;]'</span></code></p></li>
+<li><p>Go button selector: <code class="code docutils literal notranslate"><span class="pre">'//*[&#64;id=&quot;input_go&quot;]'</span></code></p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="line-block">
+<div class="line"><em class="fa fa-arrow-right"></em> <strong>[Monkey testing]</strong> <a class="reference external" href="https://youtu.be/W4RMhgaSsc8?t=931">[Video 15:31]</a></div>
+<div class="line">Is a form of automated random testing, similar to fuzzing. By sending random keystrokes and events to the page, we navigate to different parts of the application and invoke different features. The main idea is to exercise easy to reach features.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line"><em class="fa fa-eye"></em> <strong>Important details when designing a monkey testing script:</strong></div>
+<div class="line">There are certain points to consider when designing monkey tests. First, to prevent the monkey tester from logging out of the application, and to increase its coverage inside the application we use JavaScript within our monkey tests to prepare the environment and that includes removing the log out button. Second, we remove all hyperlinks to other domains outside of our test application, to prevent the monkey tester from navigating to other domains. Finally, to address the issue where the monkey tester navigates to a static page (e.g., print preview) where there is no way to get back, we set a timer and restart the monkey tester from the homepage if it gets stuck on the same page for extended periods of time. These details are already builtin to our script.</div>
+</div>
+</div>
+<ul class="simple">
+<li><p><em class="fa fa-arrow-right"></em> <strong>Install TamperMonkey</strong>: In this section, you need to install TamperMonkey browser extension, then copy the Gremlinsjs script from <code class="code docutils literal notranslate"><span class="pre">/home/ubuntu/debloating_phpMyAdmin/Tests/GremlinsJS/pma_440_GremlinsJS.user.js</span></code> as a new script. There are two place holders that you need to update with the proper id from the database as before. Replace the “UPDATE HERE” strings with the Software and Software Version Id similar to Selenium scripts.</p></li>
+<li><p><em class="fa fa-arrow-right"></em> <strong>Login to phpMyAdmin</strong>: Disable this new script and navigate to <code class="code docutils literal notranslate"><span class="pre">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages/</span></code>, in order to prevent the Monkey tester from performing unwanted tasks such as dropping other databases, we login with a user with limited permission under phpMyAdmin. The idea is to prevent monkey tests to damage your existing infrastructure.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For this test, login with username: <strong>limited</strong> password: <strong>limited</strong></p>
+</div>
+<ul class="simple">
+<li><p><em class="fa fa-arrow-right"></em> <strong>Unleash the Gremlins</strong>: Once inside phpMyAdmin, from the TamperMonkey icon, enable this script and you will see the monkeys start to interact with the application and nagivate to different pages within the application. If you don’t instantly see the clicks happening on the page, try refreshing the page to make sure the monkey testing script is injected in the page. In general, if something goes wrong, you can open the browser console and see the JavaScript errors logs and debug your monkey testing code.</p></li>
+<li><p><em class="fa fa-arrow-right"></em> <strong>Disable the monkey tester</strong>: This test is equivalent to fuzzing, as such it should be left running for extended hours. For the purposes of this tutorial, it suffices to observe how it works and you can close the current browser tab and disable the Monkey tester after a short period after time.</p></li>
+</ul>
 <div class="line-block">
 <div class="line"><em class="fa fa-arrow-right"></em> <strong>[Check the coverage in the admin panel]</strong> <a class="reference external" href="https://youtu.be/W4RMhgaSsc8?t=1043">[Video 17:23]</a></div>
 <div class="line">To make sure we have correctly recorded the code coverage as you are working with the application, navigate to <a class="reference external" href="http://localhost:8086/admin/report">http://localhost:8086/admin/report</a>. By clicking on the tests for our target web application, you can view specific files (e.g., index.php) being used and you can also view the coverage of specific lines within these files.</div>
