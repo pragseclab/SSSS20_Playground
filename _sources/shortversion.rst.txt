@@ -191,14 +191,16 @@ In the public exploit for this vulnerability, but default, the payload is set to
       - Result: x bb8440b2284f 4.19.84-microsoft-standard #1 SMP Wed Nov 13 11:44:37 UTC 2019 x86_64 GNU/Linux
       - Requires python requests library to be installed.
 
-:fa:`arrow-right` Using The Application & Recording The Code Coverage `[Video 12:07] <https://youtu.be/W4RMhgaSsc8?t=727>`_
----------------------------------------------------------------------------------------------------------------------------
+.. note::
+   If you are following the video, skip from 12:07 to 17:23 for next section.
+
+:fa:`arrow-right` Using The Application & Recording The Code Coverage
+---------------------------------------------------------------------
 
 In order to debloat the application, first we have to record a representative code coverage. This way, we can identify the parts of the application that are required by the users. For instance, if users exercise the create/drop database functionality, we want to keep it and remove the export functionality if it has never been used. 
 In this section, we interact with the "training web" container hosted over :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages`.
 
-We have various ways to model the user behavior, in this tutorial we focus on **scripting common tasks as Selenium scripts** and the **monkey testing**. 
-The template for these tests are under :code:`Tests` directory.
+Login to :code:`http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages` and start navigating to several pages within the application. This way, the debloating engine will know which features are required by the users and will remove the rest.
 
 | :fa:`arrow-right` **[Check the coverage in the admin panel]** `[Video 17:23] <https://youtu.be/W4RMhgaSsc8?t=1043>`_
 | To make sure we have correctly recorded the code coverage as you are working with the application, navigate to http://localhost:8086/admin/report. By clicking on the tests for our target web application, you can view specific files (e.g., index.php) being used and you can also view the coverage of specific lines within these files.

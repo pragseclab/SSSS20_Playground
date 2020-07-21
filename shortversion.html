@@ -66,7 +66,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> SSSS20 Less Is More Playground
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> SSSS20 Less Is More Playground
           
 
           
@@ -106,7 +106,7 @@
 <li><a class="reference internal" href="#adding-new-applications-to-the-pipeline-video-0-53"><em class="fa fa-arrow-right"></em> Adding New Applications To The Pipeline [Video 0:53]</a></li>
 <li><a class="reference internal" href="#adding-the-cve-information-to-the-vulnerability-database-video-2-39"><em class="fa fa-arrow-right"></em> Adding The CVE Information To The Vulnerability Database [Video 2:39]</a></li>
 <li><a class="reference internal" href="#finding-and-running-the-exploit-video-10-57"><em class="fa fa-arrow-right"></em> Finding And Running The Exploit [Video 10:57]</a></li>
-<li><a class="reference internal" href="#using-the-application-recording-the-code-coverage-video-12-07"><em class="fa fa-arrow-right"></em> Using The Application &amp; Recording The Code Coverage [Video 12:07]</a></li>
+<li><a class="reference internal" href="#using-the-application-recording-the-code-coverage"><em class="fa fa-arrow-right"></em> Using The Application &amp; Recording The Code Coverage</a></li>
 <li><a class="reference internal" href="#debloating-the-application-video-19-17"><em class="fa fa-arrow-right"></em> Debloating The Application [Video 19:17]</a></li>
 <li><a class="reference internal" href="#verifying-the-functionality-of-the-application-video-20-02"><em class="fa fa-arrow-right"></em> Verifying The Functionality Of The Application [Video 20:02]</a></li>
 <li><a class="reference internal" href="#running-the-exploit-on-the-debloated-version-video-20-22"><em class="fa fa-arrow-right"></em> Running The Exploit On The Debloated Version [Video 20:22]</a></li>
@@ -129,7 +129,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">SSSS20 Less Is More Playground</a>
+          <a href="index.html">SSSS20 Less Is More Playground</a>
         
       </nav>
 
@@ -158,7 +158,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>SSSS’20 Playground (Full version)</li>
     
@@ -166,7 +166,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/shortversion.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -184,7 +184,7 @@
 <p>Welcome to the <strong>Less is more</strong> playground for SSSS’20. In this tutorial, you will get hands on experience with using our pipeline to debloat a phpMyAdmin web application. You will become familiar with the debloating administration panel, setup your own tests and see how a real exploit is stopped after debloating.</p>
 <div class="line-block">
 <div class="line"><strong>Full playground vs short version</strong></div>
-<div class="line">For majority of the attendees who are interested in the full experience of debloating web applications, we suggest that you follow this tutorial. For attendees who are more interested in how web application debloating can reduce the attack surface and want to focus only on the practical aspects of the tutorial, they can follow this link <a class="reference internal" href="shortversion.html"><span class="doc">SSSS’20 Playground (Full version)</span></a>.</div>
+<div class="line">For majority of the attendees who are interested in the full experience of debloating web applications, we suggest that you follow this tutorial. For attendees who are more interested in how web application debloating can reduce the attack surface and want to focus only on the practical aspects of the tutorial, they can follow this link <a class="reference internal" href="#"><span class="doc">SSSS’20 Playground (Full version)</span></a>.</div>
 </div>
 <div class="toctree-wrapper compound">
 </div>
@@ -206,7 +206,7 @@ While it is highly suggested to read through them, there are no concrete steps a
 <li><p><a class="reference internal" href="#adding-new-applications-to-the-pipeline-video-0-53" id="id5"><em class="fa fa-arrow-right"></em> Adding New Applications To The Pipeline [Video 0:53]</a></p></li>
 <li><p><a class="reference internal" href="#adding-the-cve-information-to-the-vulnerability-database-video-2-39" id="id6"><em class="fa fa-arrow-right"></em> Adding The CVE Information To The Vulnerability Database [Video 2:39]</a></p></li>
 <li><p><a class="reference internal" href="#finding-and-running-the-exploit-video-10-57" id="id7"><em class="fa fa-arrow-right"></em> Finding And Running The Exploit [Video 10:57]</a></p></li>
-<li><p><a class="reference internal" href="#using-the-application-recording-the-code-coverage-video-12-07" id="id8"><em class="fa fa-arrow-right"></em> Using The Application &amp; Recording The Code Coverage [Video 12:07]</a></p></li>
+<li><p><a class="reference internal" href="#using-the-application-recording-the-code-coverage" id="id8"><em class="fa fa-arrow-right"></em> Using The Application &amp; Recording The Code Coverage</a></p></li>
 <li><p><a class="reference internal" href="#debloating-the-application-video-19-17" id="id9"><em class="fa fa-arrow-right"></em> Debloating The Application [Video 19:17]</a></p></li>
 <li><p><a class="reference internal" href="#verifying-the-functionality-of-the-application-video-20-02" id="id10"><em class="fa fa-arrow-right"></em> Verifying The Functionality Of The Application [Video 20:02]</a></p></li>
 <li><p><a class="reference internal" href="#running-the-exploit-on-the-debloated-version-video-20-22" id="id11"><em class="fa fa-arrow-right"></em> Running The Exploit On The Debloated Version [Video 20:22]</a></p></li>
@@ -404,13 +404,16 @@ In the public exploit for this vulnerability, but default, the payload is set to
 </ul>
 </div></blockquote>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are following the video, skip from 12:07 to 17:23 for next section.</p>
 </div>
-<div class="section" id="using-the-application-recording-the-code-coverage-video-12-07">
-<h2><em class="fa fa-arrow-right"></em> Using The Application &amp; Recording The Code Coverage <a class="reference external" href="https://youtu.be/W4RMhgaSsc8?t=727">[Video 12:07]</a><a class="headerlink" href="#using-the-application-recording-the-code-coverage-video-12-07" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="using-the-application-recording-the-code-coverage">
+<h2><a class="toc-backref" href="#id8"><em class="fa fa-arrow-right"></em> Using The Application &amp; Recording The Code Coverage</a><a class="headerlink" href="#using-the-application-recording-the-code-coverage" title="Permalink to this headline">¶</a></h2>
 <p>In order to debloat the application, first we have to record a representative code coverage. This way, we can identify the parts of the application that are required by the users. For instance, if users exercise the create/drop database functionality, we want to keep it and remove the export functionality if it has never been used.
 In this section, we interact with the “training web” container hosted over <code class="code docutils literal notranslate"><span class="pre">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages</span></code>.</p>
-<p>We have various ways to model the user behavior, in this tutorial we focus on <strong>scripting common tasks as Selenium scripts</strong> and the <strong>monkey testing</strong>.
-The template for these tests are under <code class="code docutils literal notranslate"><span class="pre">Tests</span></code> directory.</p>
+<p>Login to <code class="code docutils literal notranslate"><span class="pre">http://localhost:8085/phpMyAdmin-4.4.15.6-all-languages</span></code> and start navigating to several pages within the application. This way, the debloating engine will know which features are required by the users and will remove the rest.</p>
 <div class="line-block">
 <div class="line"><em class="fa fa-arrow-right"></em> <strong>[Check the coverage in the admin panel]</strong> <a class="reference external" href="https://youtu.be/W4RMhgaSsc8?t=1043">[Video 17:23]</a></div>
 <div class="line">To make sure we have correctly recorded the code coverage as you are working with the application, navigate to <a class="reference external" href="http://localhost:8086/admin/report">http://localhost:8086/admin/report</a>. By clicking on the tests for our target web application, you can view specific files (e.g., index.php) being used and you can also view the coverage of specific lines within these files.</div>
